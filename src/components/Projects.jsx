@@ -146,7 +146,7 @@ const projects = [
     bgColor: '#08f7fe',
     image: '/assets/Project-2.png',
     links: {
-      live: '',
+      live: 'https://www.vishwafernando.me/',
       code: 'https://github.com/vishwafernando/portfolio'
     }
   },
