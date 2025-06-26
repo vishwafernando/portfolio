@@ -2,7 +2,7 @@
 
 A modern, interactive portfolio website built with React, featuring stunning 3D visuals, smooth animations, and a cyberpunk-inspired design aesthetic.
 
-![Portfolio Preview](/Project-2.png)
+![Portfolio Preview](/assests/Project-2.png)
 
 ## ✨ Features
 
@@ -93,56 +93,6 @@ portfolio/
 └── README.md
 ```
 
-## 🎨 Design Features
-
-### Color Palette
-- **Primary**: Neon Blue (#08F7FE)
-- **Secondary**: Neon Purple (#7122FA)
-- **Background**: Dark tones for contrast
-- **Accent**: Neon Pink for highlights
-
-### Typography
-- **Headers**: Orbitron (futuristic, tech-inspired)
-- **Body**: Poppins (clean, modern readability)
-
-### Visual Effects
-- Glassmorphism with backdrop filters
-- Neon glow effects and text shadows
-- Smooth scroll animations
-- 3D particle systems
-- Interactive hover states
-
-## 📱 Responsive Design
-
-The portfolio is fully responsive and optimized for:
-- **Desktop** (1200px+)
-- **Tablet** (768px - 1199px)
-- **Mobile** (320px - 767px)
-
-## 🌟 Customization
-
-### Adding New Projects
-1. Add project images to the `assets/` folder
-2. Update the projects data in `src/components/Projects.jsx`
-3. Include project details, technologies used, and links
-
-### Updating Content
-- **Hero Section**: Edit `src/components/Hero.jsx`
-- **About Section**: Modify `src/components/About.jsx`
-- **Contact Info**: Update `src/components/Contact.jsx`
-
-### Styling Changes
-- Global styles: `src/styles/GlobalStyles.js`
-- Component-specific styles: Within each component file using Styled Components
-
-## 🔧 Available Scripts
-
-| Command | Description |
-|---------|-------------|
-| `npm run dev` | Start development server |
-| `npm run build` | Build for production |
-| `npm run preview` | Preview production build |
-| `npm run lint` | Run ESLint |
 
 ## 📄 License
 
@@ -150,15 +100,15 @@ This project is open source and available under the [MIT License](LICENSE).
 
 ## 🤝 Contributing
 
-Contributions, issues, and feature requests are welcome! Feel free to check the [issues page](https://github.com/yourusername/portfolio/issues).
+Contributions, issues, and feature requests are welcome! Feel free to check the [issues page](https://github.com/vishwafernando/portfolio/issues).
 
 ## 📧 Contact
 
 **Vishwa Fernando**
 - Website: [Your Website](https://yourwebsite.com)
-- Email: your.email@example.com
-- LinkedIn: [Your LinkedIn](https://linkedin.com/in/yourusername)
-- GitHub: [Your GitHub](https://github.com/yourusername)
+- Email: vishwafernando.vf@gmail.com
+- LinkedIn: [Your LinkedIn](https://linkedin.com/in/vishwafernando)
+- GitHub: [Your GitHub](https://github.com/vishwafernando)
 
 ---
 
