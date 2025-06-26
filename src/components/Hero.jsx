@@ -590,7 +590,7 @@ const Hero = () => {
               onClick={() => {
                 // Try to download first
                 const link = document.createElement('a');
-                link.href = '/VishwaFernando-CV.pdf';
+                link.href = '/assets/VishwaFernando-CV.pdf';
                 link.download = 'VishwaFernando-CV.pdf';
                 
                 // Fallback to opening in new tab if download fails
