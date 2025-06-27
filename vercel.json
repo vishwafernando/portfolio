@@ -1,0 +1,9 @@
+{
+  "redirects": [
+    {
+      "source": "http://vishwafernando.me",
+      "destination": "https://vishwafernando.me",
+      "permanent": true
+    }
+  ]
+}
