@@ -2,7 +2,7 @@
 
 A modern, interactive portfolio website built with React, featuring stunning 3D visuals, smooth animations, and a cyberpunk-inspired design aesthetic.
 
-![Portfolio Preview](/assests/Project-2.png)
+![Portfolio Preview](public/assests/Project-2.png)
 
 ## ✨ Features
 
@@ -105,7 +105,7 @@ Contributions, issues, and feature requests are welcome! Feel free to check the 
 ## 📧 Contact
 
 **Vishwa Fernando**
-- Website: [Your Website](https://yourwebsite.com)
+- Website: [Your Website](https://vishwafernando.me)
 - Email: vishwafernando.vf@gmail.com
 - LinkedIn: [Your LinkedIn](https://linkedin.com/in/vishwafernando)
 - GitHub: [Your GitHub](https://github.com/vishwafernando)
