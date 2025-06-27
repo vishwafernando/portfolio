@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { gsap } from 'gsap';
-import { Canvas } from '@react-three/fiber';
+import { Canvas, useThree } from '@react-three/fiber';
 import { OrbitControls, Stars } from '@react-three/drei';
 import SplitType from 'split-type';
 import Spline from '@splinetool/react-spline';
@@ -498,8 +498,29 @@ const StyledHero = styled.section`
 
 // 3D Background component
 const HeroBackground = () => {
+  const { camera } = useThree();
+  
+  useEffect(() => {
+    const handleMouseMove = (event) => {
+      // Get mouse position relative to viewport
+      const x = (event.clientX / window.innerWidth) * 2 - 1;
+      const y = -(event.clientY / window.innerHeight) * 2 + 1;
+      
+      // Apply subtle movement to camera position
+      camera.position.x = x * 2;
+      camera.position.y = y * 2;
+      camera.lookAt(0, 0, 0);
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+    };
+  }, [camera]);
+
   return (
-    <Canvas camera={{ position: [0, 0, 15], fov: 75 }}>
+    <>
       <OrbitControls
         enableZoom={false}
         autoRotate
@@ -520,7 +541,7 @@ const HeroBackground = () => {
       <pointLight position={[-10, -10, -10]} intensity={1} color="#7122fa" />
       <ambientLight intensity={0.2} />
       <fog attach="fog" args={['#000', 5, 30]} />
-    </Canvas>
+    </>
   );
 };
 
@@ -615,7 +636,9 @@ const Hero = () => {
   return (
     <StyledHero ref={heroRef} id="home">
       <div className="three-container">
-        <HeroBackground />
+        <Canvas camera={{ position: [0, 0, 15], fov: 75 }}>
+          <HeroBackground />
+        </Canvas>
       </div>
 
       <div className="container">
