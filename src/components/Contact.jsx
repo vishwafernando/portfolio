@@ -8,7 +8,7 @@ gsap.registerPlugin(ScrollTrigger);
 const StyledContact = styled.section`
   min-height: 100vh;
   width: 100%;
-  padding: 8rem 5%;
+  padding: clamp(4rem, 8vw, 8rem) 5%;
   background: var(--darker-bg);
   position: relative;
   display: flex;
@@ -35,34 +35,48 @@ const StyledContact = styled.section`
       gap: 2rem;
       padding: 2rem;
     }
+    
+    @media (max-width: 480px) {
+      padding: 1.5rem;
+      gap: 1.5rem;
+    }
   }
 
   h2 {
-    font-size: 3.5rem;
+    font-size: clamp(2.5rem, 6vw, 3.5rem);
     margin-bottom: 2rem;
     color: var(--neon-blue);
     text-shadow: 0 0 15px rgba(8, 247, 254, 0.5);
     font-family: 'Orbitron', sans-serif;
     letter-spacing: -1px;
+    
+    @media (max-width: 480px) {
+      margin-bottom: 1.5rem;
+    }
   }
 
   .contact-info {
     p {
-      font-size: 1.2rem;
+      font-size: clamp(1rem, 2.5vw, 1.2rem);
       line-height: 1.8;
       margin-bottom: 2rem;
       color: var(--text-secondary);
-      font-family: 'Space Grotesk', sans-serif;
+      font-family: 'Poppins', sans-serif;
     }
 
     .social-links {
       display: flex;
-      gap: 2rem;
+      gap: 1rem;
       margin-top: 3rem;
+      flex-wrap: wrap;
+
+      @media (max-width: 480px) {
+        gap: 0.8rem;
+      }
 
       a {
         color: var(--neon-blue);
-        font-size: 1.1rem;
+        font-size: clamp(0.9rem, 2vw, 1.1rem);
         text-transform: uppercase;
         letter-spacing: 2px;
         font-family: 'Orbitron', sans-serif;
@@ -71,6 +85,13 @@ const StyledContact = styled.section`
         padding: 0.5rem 1rem;
         border: 1px solid rgba(8, 247, 254, 0.3);
         border-radius: 5px;
+        white-space: nowrap;
+
+        @media (max-width: 480px) {
+          padding: 0.4rem 0.8rem;
+          letter-spacing: 1px;
+          font-size: 0.8rem;
+        }
 
         &:hover {
           transform: translateY(-5px);
@@ -100,8 +121,12 @@ const StyledContact = styled.section`
         color: var(--text-secondary);
         transition: all 0.3s ease;
         pointer-events: none;
-        font-family: 'Space Grotesk', sans-serif;
+        font-family: 'Poppins', sans-serif;
         z-index: 1;
+        
+        @media (max-width: 480px) {
+          font-size: 0.9rem;
+        }
       }
 
       input,
@@ -112,11 +137,15 @@ const StyledContact = styled.section`
         border: 1px solid rgba(8, 247, 254, 0.3);
         border-radius: 8px;
         color: var(--text-primary);
-        font-size: 1rem;
+        font-size: clamp(0.9rem, 2vw, 1rem);
         transition: all 0.3s ease;
-        font-family: 'Space Grotesk', sans-serif;
+        font-family: 'Poppins', sans-serif;
         position: relative;
         z-index: 2;
+
+        @media (max-width: 480px) {
+          padding: 0.8rem;
+        }
 
         &:focus {
           outline: none;
@@ -146,7 +175,7 @@ const StyledContact = styled.section`
       background: rgba(8, 247, 254, 0.1);
       border: 2px solid var(--neon-blue);
       color: var(--neon-blue);
-      font-size: 1.1rem;
+      font-size: clamp(0.9rem, 2vw, 1.1rem);
       text-transform: uppercase;
       letter-spacing: 2px;
       cursor: pointer;
@@ -156,6 +185,12 @@ const StyledContact = styled.section`
       font-family: 'Orbitron', sans-serif;
       margin-top: 1rem;
       border-radius: 8px;
+      width: 100%;
+
+      @media (max-width: 480px) {
+        padding: 0.8rem 1.5rem;
+        letter-spacing: 1px;
+      }
 
       &:hover {
         background: var(--neon-blue);
@@ -303,7 +338,7 @@ const Contact = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Form submitted');
+    // Handle form submission here
   };
 
   return (

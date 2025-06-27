@@ -34,7 +34,6 @@ const App = () => {
   const [startAnimations, setStartAnimations] = useState(false);
 
   useEffect(() => {
-    console.log('App component mounted');
     gsap.registerPlugin(ScrollTrigger);
     
     ScrollTrigger.defaults({
@@ -50,14 +49,11 @@ const App = () => {
 
   const handleLoadComplete = () => {
     setIsLoading(false);
-    // Delay to ensure loading screen fade out completes (800ms fade + buffer)
+    // Delay to ensure loading screen fade out completes
     setTimeout(() => {
-      console.log('Setting startAnimations to true');
       setStartAnimations(true);
-    }, 10);
+    }, 100);
   };
-
-  console.log('App component rendering', { isLoading, startAnimations });
 
   return (
     <>

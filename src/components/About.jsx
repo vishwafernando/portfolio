@@ -193,10 +193,14 @@ const StyledAbout = styled.section`
     padding: 0 2rem;
     position: relative;
     z-index: 5;
+    
+    @media (max-width: 480px) {
+      padding: 0 1rem;
+    }
   }
   
   .section-title {
-    font-size: 2.5rem;
+    font-size: clamp(2rem, 5vw, 2.5rem);
     font-weight: 700;
     margin-bottom: 1.5rem;
     color: var(--text-primary);
@@ -216,23 +220,52 @@ const StyledAbout = styled.section`
       background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
       border-radius: 3px;
     }
+    
+    @media (max-width: 480px) {
+      margin-bottom: 1rem;
+      
+      &::after {
+        height: 2px;
+        bottom: -8px;
+      }
+    }
   }
     
   .section-subtitle {
-    font-size: 2rem;
+    font-size: clamp(1.5rem, 4vw, 2rem);
     color: var(--neon-blue);
     margin-bottom: 3rem;
     font-family: 'Poppins', sans-serif;
     font-weight: 400;
     letter-spacing: 1px;
+    
+    @media (max-width: 480px) {
+      margin-bottom: 2rem;
+      letter-spacing: 0.5px;
+    }
   }
+  
   .p-subtitle {
-    font-size: 2rem;
-    color:var(--neon-white);
+    font-size: clamp(1.5rem, 4vw, 2rem);
+    color: var(--neon-white);
     margin-bottom: 3rem;
     font-family: 'Poppins', sans-serif;
     font-weight: 400;
     letter-spacing: 1px;
+    line-height: 1.4;
+    
+    @media (max-width: 480px) {
+      margin-bottom: 2rem;
+      letter-spacing: 0.5px;
+      line-height: 1.3;
+    }
+    
+    img {
+      @media (max-width: 480px) {
+        width: 35px;
+        height: auto;
+      }
+    }
   }
   
   .grid {
@@ -245,22 +278,51 @@ const StyledAbout = styled.section`
       grid-template-columns: 1fr;
       gap: 3rem;
     }
+    
+    @media (max-width: 480px) {
+      gap: 2rem;
+    }
   }
   
   .about-content {
     color: var(--text-primary);
     
     p {
-      font-size: 1.1rem;
+      font-size: clamp(1rem, 2.5vw, 1.1rem);
       line-height: 1.8;
       margin-bottom: 1.5rem;
       color: rgba(255, 255, 255, 0.85);
       font-family: 'Poppins', sans-serif;
+      
+      @media (max-width: 480px) {
+        line-height: 1.6;
+        margin-bottom: 1.2rem;
+      }
     }
     
     .highlight {
       color: var(--neon-blue);
       font-weight: 600;
+    }
+    
+    a {
+      color: var(--neon-blue);
+      text-decoration: none;
+      border-bottom: 1px dotted var(--neon-blue);
+      transition: all 0.3s ease;
+      
+      &:hover {
+        color: var(--neon-purple);
+        border-bottom-color: var(--neon-purple);
+        text-shadow: 0 0 10px rgba(138, 43, 226, 0.5);
+      }
+    }
+    
+    img {
+      @media (max-width: 480px) {
+        width: 16px;
+        height: auto;
+      }
     }
   }
   
@@ -271,8 +333,12 @@ const StyledAbout = styled.section`
       margin-top: 2rem;
     }
     
+    @media (max-width: 480px) {
+      margin-top: 1.5rem;
+    }
+    
     .skills-title {
-      font-size: 2.2rem;
+      font-size: clamp(1.8rem, 4vw, 2.2rem);
       color: var(--text-primary);
       margin-bottom: 1.5rem;
       font-family: 'Orbitron', sans-serif;
@@ -282,6 +348,11 @@ const StyledAbout = styled.section`
       letter-spacing: 3px;
       position: relative;
       text-shadow: 0 0 20px rgba(8, 247, 254, 0.3);
+      
+      @media (max-width: 480px) {
+        letter-spacing: 1.5px;
+        margin-bottom: 1.2rem;
+      }
       
       &::before {
         content: '';
@@ -310,6 +381,12 @@ const StyledAbout = styled.section`
         background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple), var(--neon-blue));
         border-radius: 3px;
         box-shadow: 0 0 15px rgba(8, 247, 254, 0.6);
+        
+        @media (max-width: 480px) {
+          width: 60px;
+          height: 2px;
+          bottom: -10px;
+        }
       }
     }
   }
@@ -331,6 +408,11 @@ const StyledAbout = styled.section`
     }
     
     @media (max-width: 480px) {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
+    
+    @media (max-width: 360px) {
       grid-template-columns: 1fr;
       gap: 1rem;
     }
@@ -356,6 +438,17 @@ const StyledAbout = styled.section`
       0 8px 32px rgba(0, 0, 0, 0.4),
       inset 0 1px 0 rgba(255, 255, 255, 0.1);
     
+    @media (max-width: 480px) {
+      height: 120px;
+      padding: 1.5rem 1rem;
+      border-radius: 15px;
+    }
+    
+    @media (max-width: 360px) {
+      height: 110px;
+      padding: 1.2rem 0.8rem;
+    }
+    
     /* Animated gradient border */
     &::before {
       content: '';
@@ -377,6 +470,10 @@ const StyledAbout = styled.section`
       animation: borderRotate 4s linear infinite;
       opacity: 0;
       transition: opacity 0.4s ease;
+      
+      @media (max-width: 480px) {
+        border-radius: 15px;
+      }
     }
     
     /* Glowing background effect */
@@ -407,6 +504,10 @@ const StyledAbout = styled.section`
       background: linear-gradient(135deg, rgba(15, 15, 20, 0.98), rgba(25, 25, 35, 0.9));
       border-color: ${props => props.color || '#08f7fe'}60;
       
+      @media (max-width: 480px) {
+        transform: translateY(-8px) scale(1.02);
+      }
+      
       &::before {
         opacity: 1;
       }
@@ -414,12 +515,21 @@ const StyledAbout = styled.section`
       &::after {
         width: 140px;
         height: 140px;
+        
+        @media (max-width: 480px) {
+          width: 120px;
+          height: 120px;
+        }
       }
       
       .skill-icon {
         opacity: 0.25;
         transform: scale(0.75) translateY(-8px);
         filter: blur(0.5px);
+        
+        @media (max-width: 480px) {
+          transform: scale(0.8) translateY(-6px);
+        }
       }
       
       .skill-name {
@@ -445,12 +555,22 @@ const StyledAbout = styled.section`
         height: 52px;
         object-fit: contain;
         filter: brightness(1.2) contrast(1.3) saturate(1.1);
+        
+        @media (max-width: 480px) {
+          width: 42px;
+          height: 42px;
+        }
+        
+        @media (max-width: 360px) {
+          width: 38px;
+          height: 38px;
+        }
       }
     }
     
     .skill-name {
       font-family: 'Poppins', sans-serif;
-      font-size: 0.95rem;
+      font-size: clamp(0.8rem, 2vw, 0.95rem);
       color: var(--text-primary);
       margin: 0;
       font-weight: 600;
@@ -469,6 +589,11 @@ const StyledAbout = styled.section`
       overflow: hidden;
       text-overflow: ellipsis;
       text-align: center;
+      
+      @media (max-width: 480px) {
+        letter-spacing: 0.3px;
+        transform: translateY(15px);
+      }
     }
     
     .skill-progress {
@@ -490,6 +615,12 @@ const StyledAbout = styled.section`
       box-shadow: 
         0 0 15px ${props => props.color || '#08f7fe'}50,
         0 2px 4px rgba(0, 0, 0, 0.3);
+      
+      @media (max-width: 480px) {
+        width: 60px;
+        height: 3px;
+        bottom: 10px;
+      }
     }
   }
   
@@ -537,7 +668,12 @@ const StyledAbout = styled.section`
   }
 
   @media (max-width: 768px) {
-    padding: 100px 0 60px;
+    padding: 80px 0 50px;
+  }
+  
+  @media (max-width: 480px) {
+    padding: 60px 0 40px;
+    min-height: auto;
   }
 `;
 
@@ -687,22 +823,24 @@ const About = () => {
     <StyledAbout id="about" ref={aboutRef}>
       <div className="container">
         <h2 className="section-title">About Me</h2>
-        <p className="p-subtitle">Hello! I'm <span className="section-subtitle">Vishwa</span> a<br/>
+        <p className="p-subtitle">
+          Hello! I'm <span className="section-subtitle">Vishwa</span> a<br/>
           <span className="section-subtitle">Developer & Designer</span>
-           <img src="https://media.giphy.com/media/WUlplcMpOCEmTGBtBW/giphy.gif" width="50"/>
+          <img src="https://media.giphy.com/media/WUlplcMpOCEmTGBtBW/giphy.gif" width="50" alt="Wave emoji"/>
         </p>
 
         <div className="grid">
           <div className="about-content">
             <p>
-              I am a undergraduate student currently pursuing a Higher National Diploma in Software Engineering at
+              I am an undergraduate student currently pursuing a Higher National Diploma in Software Engineering at
               Saegis Campus in Sri Lanka
-              <img src="https://flagpedia.net/data/flags/emoji/google/160x160/lk.png" width="20"/>
-              &nbsp; passionate about Frontend Development and UI Design</p>
+              <img src="https://flagpedia.net/data/flags/emoji/google/160x160/lk.png" width="20" alt="Sri Lanka flag"/>
+              &nbsp; passionate about Frontend Development and UI Design.
+            </p>
             <p>
               My journey started with a curiosity about how things work on the web.
               Since then, I've been continuously learning and growing, embracing new technologies and
-              best practicing. Check my <a href="https://github.com/vishwafernando/vishwafernando" target="_blank">work here</a>
+              best practices. Check my <a href="https://github.com/vishwafernando/vishwafernando" target="_blank" rel="noopener noreferrer">work here</a>.
             </p>
             <p>
               I'm also learning back-end to build full-stack apps.

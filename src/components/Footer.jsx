@@ -4,7 +4,7 @@ import styled from 'styled-components';
 const StyledFooter = styled.footer`
   background: var(--darker-bg);
   border-top: 1px solid rgba(8, 247, 254, 0.3);
-  padding: 3rem 0 1.5rem;
+  padding: clamp(2rem, 6vw, 3rem) 0 1.5rem;
   position: relative;
   overflow: hidden;
   

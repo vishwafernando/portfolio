@@ -49,6 +49,16 @@ const StyledHero = styled.section`
     align-items: center;
     height: 100%;
     gap: 2rem;
+    
+    @media (max-width: 992px) {
+      grid-template-columns: 1fr;
+      text-align: center;
+      padding: 0 1.5rem;
+    }
+    
+    @media (max-width: 480px) {
+      padding: 0 1rem;
+    }
   }
   
   .hero-content {
@@ -137,9 +147,9 @@ const StyledHero = styled.section`
   }
   
   .glitch-title {
-    font-size: 4.8rem;
+    font-size: clamp(2.5rem, 8vw, 4.8rem);
     font-weight: 800;
-    line-height: 1;
+    line-height: 1.1;
     margin: 0 0 1rem 0;
     color: #fff;
     text-transform: uppercase;
@@ -148,6 +158,10 @@ const StyledHero = styled.section`
     position: relative;
     display: inline-block;
     text-shadow: 0 0 20px rgba(8, 247, 254, 0.4);
+    
+    @media (max-width: 480px) {
+      letter-spacing: -1px;
+    }
   }
   
   .char {
@@ -183,7 +197,7 @@ const StyledHero = styled.section`
   }
 
   .subtitle {
-    font-size: 1.75rem;
+    font-size: clamp(1.2rem, 4vw, 1.75rem);
     color: var(--neon-blue);
     margin: 1rem 0 1.5rem;
     font-family: 'Poppins', sans-serif;
@@ -220,14 +234,20 @@ const StyledHero = styled.section`
   }
 
   .description {
-    font-size: 1.1rem;
+    font-size: clamp(1rem, 2.5vw, 1.1rem);
     color: rgba(255, 255, 255, 0.8);
     line-height: 1.7;
     margin: 0 0 2rem;
     font-family: 'Poppins', sans-serif;
     max-width: 600px;
     text-align: left;
-    opacity: 0; /* Initially hidden */
+    opacity: 0;
+    
+    @media (max-width: 992px) {
+      text-align: center;
+      margin-left: auto;
+      margin-right: auto;
+    }
     
     p {
       margin-bottom: 1rem;
@@ -242,14 +262,25 @@ const StyledHero = styled.section`
     display: flex;
     gap: 1.5rem;
     flex-wrap: wrap;
-    opacity: 100; 
+    opacity: 0;
+    
+    @media (max-width: 992px) {
+      justify-content: center;
+    }
+    
+    @media (max-width: 768px) {
+      flex-direction: column;
+      width: 100%;
+      max-width: 400px;
+      margin: 0 auto;
+    }
     
     .cta-button {
       padding: 0.9rem 2rem;
       background: transparent;
       border: 1px solid var(--neon-blue);
       color: var(--neon-blue);
-      font-size: 0.9rem;
+      font-size: clamp(0.8rem, 2vw, 0.9rem);
       text-transform: uppercase;
       letter-spacing: 2px;
       cursor: pointer;
@@ -260,6 +291,16 @@ const StyledHero = styled.section`
       overflow: hidden;
       font-weight: 600;
       opacity: 0;
+      
+      @media (max-width: 768px) {
+        width: 100%;
+        padding: 1rem 2rem;
+      }
+      
+      @media (max-width: 480px) {
+        letter-spacing: 1px;
+        padding: 0.8rem 1.5rem;
+      }
       
       &::before {
         content: '';
@@ -562,34 +603,16 @@ const Hero = ({ startAnimations = false }) => {
   const ctaContainerRef = useRef(null);
   const heroSphereRef = useRef(null);
   const splineContainerRef = useRef(null);
-  const scrollIndicatorRef = useRef(null);
-  const [currentRole, setCurrentRole] = useState('Developer');
+  const scrollIndicatorRef = useRef(null);  const [currentRole, setCurrentRole] = useState('Developer');
   const [animationsStarted, setAnimationsStarted] = useState(false);
   const roles = ['Developer', 'Designer'];
 
-  // Debug useEffect to track prop changes
   useEffect(() => {
-    console.log('Hero prop change - startAnimations:', startAnimations, 'animationsStarted:', animationsStarted);
-  }, [startAnimations, animationsStarted]);
-
-  useEffect(() => {
-    console.log('Hero component received startAnimations:', startAnimations, 'animationsStarted:', animationsStarted);
-
     // Only start animations when loading is complete
     if (!startAnimations || animationsStarted) return;
 
     // Add a small delay to ensure loading screen has fully faded out
     const animationTimeout = setTimeout(() => {
-      console.log('Starting hero animations after loading');
-      console.log('Refs status:', {
-        titleContainer: !!titleContainerRef.current,
-        subtitle: !!subtitleRef.current,
-        description: !!descriptionRef.current,
-        ctaContainer: !!ctaContainerRef.current,
-        heroSphere: !!heroSphereRef.current,
-        splineContainer: !!splineContainerRef.current,
-        scrollIndicator: !!scrollIndicatorRef.current
-      });
       setAnimationsStarted(true);
 
       // Setup SplitType for text animation
@@ -653,18 +676,24 @@ const Hero = ({ startAnimations = false }) => {
         );
       }
 
-      // CTA buttons
       if (ctaContainerRef.current) {
+        tl.fromTo(
+          ctaContainerRef.current,
+          { opacity: 0, y: 20 },
+          { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out' },
+          '-=0.4'
+        );
+        
         const buttons = ctaContainerRef.current.querySelectorAll('.cta-button');
         tl.fromTo(
           buttons,
           { opacity: 0, y: 20 },
           { opacity: 1, y: 0, stagger: 0.15, duration: 0.8, ease: 'power2.out' },
-          '-=0.4'
+          '-=0.6'
         );
       }
 
-      // Visual elements
+
       if (heroSphereRef.current) {
         tl.fromTo(
           heroSphereRef.current,
