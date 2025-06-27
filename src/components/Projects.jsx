@@ -141,8 +141,8 @@ const projects = [
   },
   {
     title: 'Portfolio Website',
-    description: 'Portfolio website built with React, Styled Components, and GSAP. Designed with a futuristic cyberpunk aesthetic.',
-    tags: ['Vue.js', 'D3.js', 'GraphQL', 'GSAP'],
+    description: 'Portfolio website built with React, Styled Components,Spline and GSAP. Designed with a futuristic cyberpunk aesthetic.',
+    tags: ['React', 'Vite', 'Spline', 'GSAP', 'Personal-Project'],
     bgColor: '#08f7fe',
     image: '/assets/Project-2.png',
     links: {
@@ -158,7 +158,7 @@ const projects = [
     image: '/assets/Project-3.png',
     links: {
       live: 'https://bankingwebapp-three.vercel.app/',
-      code: ''
+      code: 'https://github.com/vishwafernando/bankingwebapp'
     }
   }
 ];
@@ -171,28 +171,28 @@ const Projects = () => {
   // Function to trigger animations
   const triggerAnimations = () => {
     if (animationsTriggered || !sectionRef.current) return;
-    
+
     setAnimationsTriggered(true);
-    
+
     // Kill existing timeline if it exists
     if (animationTimelineRef.current) {
       animationTimelineRef.current.kill();
     }
-    
+
     // Create new timeline
     const tl = gsap.timeline();
     animationTimelineRef.current = tl;
-    
+
     const section = sectionRef.current;
     const title = section.querySelector('h2');
     const cards = section.querySelectorAll('.project-card');
-    
+
     // Only animate if elements exist
     if (title && cards.length > 0) {
       // Set initial states only for elements that exist
       gsap.set(title, { opacity: 0, y: 100 });
       gsap.set(cards, { opacity: 0, y: 100 });
-      
+
       // Animate elements in sequence
       tl.to(title, {
         opacity: 1,
@@ -200,13 +200,13 @@ const Projects = () => {
         duration: 1,
         ease: 'power3.out'
       })
-      .to(cards, {
-        opacity: 1,
-        y: 0,
-        stagger: 0.2,
-        duration: 0.8,
-        ease: 'back.out(1.7)'
-      }, '-=0.6');
+        .to(cards, {
+          opacity: 1,
+          y: 0,
+          stagger: 0.2,
+          duration: 0.8,
+          ease: 'back.out(1.7)'
+        }, '-=0.6');
     }
   };
 
@@ -221,10 +221,10 @@ const Projects = () => {
         }, 300);
       }
     };
-    
+
     checkDirectNavigation();
     window.addEventListener('hashchange', checkDirectNavigation);
-    
+
     return () => {
       window.removeEventListener('hashchange', checkDirectNavigation);
     };
@@ -237,9 +237,9 @@ const Projects = () => {
         triggerAnimations();
       }, 400); // Increased delay for better reliability
     };
-    
+
     window.addEventListener('navigateToProjects', handleNavigationToProjects);
-    
+
     return () => {
       window.removeEventListener('navigateToProjects', handleNavigationToProjects);
     };
@@ -252,7 +252,7 @@ const Projects = () => {
       const section = sectionRef.current;
       const title = section.querySelector('h2');
       const cards = section.querySelectorAll('.project-card');
-      
+
       if (title && cards.length > 0) {
         gsap.set(title, { opacity: 1, y: 0 });
         gsap.set(cards, { opacity: 1, y: 0 });
@@ -264,7 +264,7 @@ const Projects = () => {
     // ScrollTrigger-based animations (fallback)
     if (!animationsTriggered && sectionRef.current) {
       const section = sectionRef.current;
-      
+
       // Create ScrollTrigger only if not already animated
       const scrollTriggerAnimation = ScrollTrigger.create({
         trigger: section,
@@ -298,7 +298,7 @@ const Projects = () => {
           >
             <div className="project-image">
               {project.image && (
-                  <img src={project.image} alt={project.title} />
+                <img src={project.image} alt={project.title} />
               )}
             </div>
             <div className="project-content">

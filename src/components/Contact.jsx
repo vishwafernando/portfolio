@@ -189,29 +189,29 @@ const Contact = () => {
   // Function to trigger animations
   const triggerAnimations = () => {
     if (animationsTriggered || !sectionRef.current) return;
-    
+
     setAnimationsTriggered(true);
-    
+
     // Kill existing timeline if it exists
     if (animationTimelineRef.current) {
       animationTimelineRef.current.kill();
     }
-    
+
     // Create new timeline
     const tl = gsap.timeline();
     animationTimelineRef.current = tl;
-    
+
     const section = sectionRef.current;
     const title = section.querySelector('h2');
     const formGroups = section.querySelectorAll('.form-group');
     const contactInfo = section.querySelector('.contact-info');
-    
+
     // Only animate if elements exist
     if (title && formGroups.length > 0 && contactInfo) {
       // Set initial states
       gsap.set(contactInfo, { opacity: 0, x: -50 });
       gsap.set(formGroups, { opacity: 0, y: 20 });
-      
+
       // Animate elements in sequence
       tl.to(contactInfo, {
         opacity: 1,
@@ -219,13 +219,13 @@ const Contact = () => {
         duration: 1,
         ease: 'power3.out'
       })
-      .to(formGroups, {
-        opacity: 1,
-        y: 0,
-        stagger: 0.2,
-        duration: 0.8,
-        ease: 'power2.out'
-      }, '-=0.5');
+        .to(formGroups, {
+          opacity: 1,
+          y: 0,
+          stagger: 0.2,
+          duration: 0.8,
+          ease: 'power2.out'
+        }, '-=0.5');
     }
   };
 
@@ -239,10 +239,10 @@ const Contact = () => {
         }, 300);
       }
     };
-    
+
     checkDirectNavigation();
     window.addEventListener('hashchange', checkDirectNavigation);
-    
+
     return () => {
       window.removeEventListener('hashchange', checkDirectNavigation);
     };
@@ -255,9 +255,9 @@ const Contact = () => {
         triggerAnimations();
       }, 400);
     };
-    
+
     window.addEventListener('navigateToContact', handleNavigationToContact);
-    
+
     return () => {
       window.removeEventListener('navigateToContact', handleNavigationToContact);
     };
@@ -270,7 +270,7 @@ const Contact = () => {
       const section = sectionRef.current;
       const contactInfo = section.querySelector('.contact-info');
       const formGroups = section.querySelectorAll('.form-group');
-      
+
       if (contactInfo && formGroups.length > 0) {
         gsap.set(contactInfo, { opacity: 1, x: 0 });
         gsap.set(formGroups, { opacity: 1, y: 0 });
@@ -313,8 +313,8 @@ const Contact = () => {
         <div className="contact-info">
           <h2>Get In Touch</h2>
           <p>
-            Ready to start a project or just want to chat? 
-            Feel free to reach out. I'm always open to discussing new projects, 
+            Ready to start a project or just want to chat?
+            Feel free to reach out. I'm always open to discussing new projects,
             creative ideas, or opportunities to be part of your visions.
           </p>
           <div className="social-links">
@@ -323,15 +323,15 @@ const Contact = () => {
             <a href="https://mail.google.com/mail/u/0/?tf=cm&fs=1&to=vishwafernando.vf@gmail.com" target="_blank" rel="noopener noreferrer">Email Me</a>
           </div>
         </div>
-        
+
         <div className="contact-form">
           <form onSubmit={handleSubmit}>
             <div className="form-group">
-              <input type="text" id="name" placeholder=" " required/>
+              <input type="text" id="name" placeholder=" " required />
               <label htmlFor="name">Your Name</label>
             </div>
             <div className="form-group">
-              <input type="email" id="email" placeholder=" " required/>
+              <input type="email" id="email" placeholder=" " required />
               <label htmlFor="email">Your Email</label>
             </div>
             <div className="form-group">

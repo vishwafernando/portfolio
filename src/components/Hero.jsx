@@ -73,6 +73,7 @@ const StyledHero = styled.section`
     width: 400px;
     height: 400px;
     z-index: 1;
+    opacity: 0; 
     
     &::before {
       content: '';
@@ -108,6 +109,7 @@ const StyledHero = styled.section`
     border-radius: 50%;
     overflow: hidden;
     z-index: 3;
+    opacity: 0; 
     
     &::before {
       content: '';
@@ -131,6 +133,7 @@ const StyledHero = styled.section`
   
   .title-container {
     margin-bottom: 2rem;
+    opacity: 0; 
   }
   
   .glitch-title {
@@ -186,6 +189,7 @@ const StyledHero = styled.section`
     font-family: 'Poppins', sans-serif;
     text-shadow: 0 0 10px rgba(8, 247, 254, 0.5);
     font-weight: 400;
+    opacity: 0; 
     
     .role-text {
       position: relative;
@@ -223,6 +227,7 @@ const StyledHero = styled.section`
     font-family: 'Poppins', sans-serif;
     max-width: 600px;
     text-align: left;
+    opacity: 0; /* Initially hidden */
     
     p {
       margin-bottom: 1rem;
@@ -237,6 +242,7 @@ const StyledHero = styled.section`
     display: flex;
     gap: 1.5rem;
     flex-wrap: wrap;
+    opacity: 100; 
     
     .cta-button {
       padding: 0.9rem 2rem;
@@ -253,6 +259,7 @@ const StyledHero = styled.section`
       position: relative;
       overflow: hidden;
       font-weight: 600;
+      opacity: 0;
       
       &::before {
         content: '';
@@ -341,7 +348,7 @@ const StyledHero = styled.section`
     flex-direction: column;
     align-items: center;
     color: var(--text-primary);
-    opacity: 0.7;
+    opacity: 0; 
     transition: opacity 0.3s ease;
     z-index: 10;
     
@@ -499,13 +506,13 @@ const StyledHero = styled.section`
 // 3D Background component
 const HeroBackground = () => {
   const { camera } = useThree();
-  
+
   useEffect(() => {
     const handleMouseMove = (event) => {
       // Get mouse position relative to viewport
       const x = (event.clientX / window.innerWidth) * 2 - 1;
       const y = -(event.clientY / window.innerHeight) * 2 + 1;
-      
+
       // Apply subtle movement to camera position
       camera.position.x = x * 2;
       camera.position.y = y * 2;
@@ -513,7 +520,7 @@ const HeroBackground = () => {
     };
 
     window.addEventListener('mousemove', handleMouseMove);
-    
+
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
     };
@@ -546,85 +553,157 @@ const HeroBackground = () => {
 };
 
 // Main Hero component
-const Hero = () => {
+const Hero = ({ startAnimations = false }) => {
   const heroRef = useRef(null);
   const titleRef = useRef(null);
+  const titleContainerRef = useRef(null);
+  const subtitleRef = useRef(null);
+  const descriptionRef = useRef(null);
+  const ctaContainerRef = useRef(null);
+  const heroSphereRef = useRef(null);
+  const splineContainerRef = useRef(null);
+  const scrollIndicatorRef = useRef(null);
   const [currentRole, setCurrentRole] = useState('Developer');
+  const [animationsStarted, setAnimationsStarted] = useState(false);
   const roles = ['Developer', 'Designer'];
 
+  // Debug useEffect to track prop changes
   useEffect(() => {
-    // Setup SplitType for text animation
-    if (titleRef.current) {
-      const splitTitle = new SplitType(titleRef.current, { types: 'chars' });
+    console.log('Hero prop change - startAnimations:', startAnimations, 'animationsStarted:', animationsStarted);
+  }, [startAnimations, animationsStarted]);
 
-      // Make sure we've got the elements
-      if (splitTitle.chars) {
-        gsap.fromTo(
-          splitTitle.chars,
-          { opacity: 0, y: 20 },
-          {
-            opacity: 1,
-            y: 0,
-            stagger: 0.05,
-            duration: 0.5,
-            ease: 'power2.out',
-            delay: 0.5
-          }
+  useEffect(() => {
+    console.log('Hero component received startAnimations:', startAnimations, 'animationsStarted:', animationsStarted);
+
+    // Only start animations when loading is complete
+    if (!startAnimations || animationsStarted) return;
+
+    // Add a small delay to ensure loading screen has fully faded out
+    const animationTimeout = setTimeout(() => {
+      console.log('Starting hero animations after loading');
+      console.log('Refs status:', {
+        titleContainer: !!titleContainerRef.current,
+        subtitle: !!subtitleRef.current,
+        description: !!descriptionRef.current,
+        ctaContainer: !!ctaContainerRef.current,
+        heroSphere: !!heroSphereRef.current,
+        splineContainer: !!splineContainerRef.current,
+        scrollIndicator: !!scrollIndicatorRef.current
+      });
+      setAnimationsStarted(true);
+
+      // Setup SplitType for text animation
+      if (titleRef.current) {
+        const splitTitle = new SplitType(titleRef.current, { types: 'chars' });
+
+        // Make sure we've got the elements
+        if (splitTitle.chars) {
+          gsap.fromTo(
+            splitTitle.chars,
+            { opacity: 0, y: 20 },
+            {
+              opacity: 1,
+              y: 0,
+              stagger: 0.05,
+              duration: 0.5,
+              ease: 'power2.out',
+              delay: 0.2
+            }
+          );
+        }
+      }
+
+      // Role cycling
+      const roleInterval = setInterval(() => {
+        setCurrentRole(prev => {
+          const currentIndex = roles.indexOf(prev);
+          return roles[(currentIndex + 1) % roles.length];
+        });
+      }, 2500);
+
+      // GSAP animations for hero section elements using refs
+      const tl = gsap.timeline();
+
+      // First animate the title container
+      if (titleContainerRef.current) {
+        tl.fromTo(
+          titleContainerRef.current,
+          { opacity: 0, y: 30 },
+          { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out', delay: 0.1 }
         );
       }
-    }
 
-    // Role cycling
-    const roleInterval = setInterval(() => {
-      setCurrentRole(prev => {
-        const currentIndex = roles.indexOf(prev);
-        return roles[(currentIndex + 1) % roles.length];
-      });
-    }, 2500);
+      // Then subtitle
+      if (subtitleRef.current) {
+        tl.fromTo(
+          subtitleRef.current,
+          { opacity: 0, y: 20 },
+          { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out' },
+          '-=0.4'
+        );
+      }
 
-    // GSAP animations for hero section elements
-    const tl = gsap.timeline();
+      // Description
+      if (descriptionRef.current) {
+        tl.fromTo(
+          descriptionRef.current,
+          { opacity: 0, y: 20 },
+          { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out' },
+          '-=0.4'
+        );
+      }
 
-    tl.fromTo(
-      '.subtitle',
-      { opacity: 0, y: 20 },
-      { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out', delay: 1.2 }
-    )
-      .fromTo(
-        '.description',
-        { opacity: 0, y: 20 },
-        { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out' },
-        '-=0.4'
-      )
-      .fromTo(
-        '.cta-button',
-        { opacity: 0, y: 20 },
-        { opacity: 1, y: 0, stagger: 0.2, duration: 0.8, ease: 'power2.out' },
-        '-=0.4'
-      )
-      .fromTo(
-        '.hero-sphere',
-        { opacity: 0, scale: 0.8 },
-        { opacity: 1, scale: 1, duration: 1.2, ease: 'power3.out' },
-        '-=1'
-      )
-      .fromTo(
-        '.spline-container',
-        { opacity: 0, scale: 0.8 },
-        { opacity: 1, scale: 1, duration: 1.2, ease: 'power3.out' },
-        '-=1'
-      )
-      .fromTo(
-        '.scroll-indicator',
-        { opacity: 0, y: -20 },
-        { opacity: 0.7, y: 0, duration: 0.8, ease: 'power2.out' },
-        '-=0.5'
-      );
+      // CTA buttons
+      if (ctaContainerRef.current) {
+        const buttons = ctaContainerRef.current.querySelectorAll('.cta-button');
+        tl.fromTo(
+          buttons,
+          { opacity: 0, y: 20 },
+          { opacity: 1, y: 0, stagger: 0.15, duration: 0.8, ease: 'power2.out' },
+          '-=0.4'
+        );
+      }
 
+      // Visual elements
+      if (heroSphereRef.current) {
+        tl.fromTo(
+          heroSphereRef.current,
+          { opacity: 0, scale: 0.8 },
+          { opacity: 1, scale: 1, duration: 1.2, ease: 'power3.out' },
+          '-=1'
+        );
+      }
+
+      if (splineContainerRef.current) {
+        tl.fromTo(
+          splineContainerRef.current,
+          { opacity: 0, scale: 0.8 },
+          { opacity: 1, scale: 1, duration: 1.2, ease: 'power3.out' },
+          '-=1'
+        );
+      }
+
+      // Scroll indicator
+      if (scrollIndicatorRef.current) {
+        tl.fromTo(
+          scrollIndicatorRef.current,
+          { opacity: 0, y: -20 },
+          { opacity: 0.7, y: 0, duration: 0.8, ease: 'power2.out' },
+          '-=0.5'
+        );
+      }
+
+      // Store cleanup function for the interval
+      return () => {
+        clearInterval(roleInterval);
+      };
+    }, 300); // 300ms delay to ensure loading screen fade completes
+
+    // Cleanup function
     return () => {
-      clearInterval(roleInterval);
+      clearTimeout(animationTimeout);
     };
-  }, []);
+  }, [startAnimations, animationsStarted, roles]);
 
   const scrollToSection = (sectionId) => {
     const element = document.getElementById(sectionId);
@@ -643,21 +722,21 @@ const Hero = () => {
 
       <div className="container">
         <div className="hero-content">
-          <div className="title-container">
-            <h1 className="glitch-title" ref={titleRef}>Vishwa <br/>
-                Fernando</h1>
-            <div className="subtitle">
+          <div className="title-container" ref={titleContainerRef}>
+            <h1 className="glitch-title" ref={titleRef}>Vishwa <br />
+              Fernando</h1>
+            <div className="subtitle" ref={subtitleRef}>
               Web <span className="role-text">{currentRole}</span>
               <span className="typing-cursor"></span>
             </div>
           </div>
 
-          <div className="description">
+          <div className="description" ref={descriptionRef}>
             <p>Crafting digital experiences that push the boundaries of creativity and technology.</p>
-            <p>Let's build something extraordinary together.</p>
+            <p>Let's build something extraordinary.</p>
           </div>
 
-          <div className="cta-container">
+          <div className="cta-container" ref={ctaContainerRef}>
             <button
               className="cta-button"
               onClick={() => scrollToSection('projects')}
@@ -677,7 +756,7 @@ const Hero = () => {
                 const link = document.createElement('a');
                 link.href = '/assets/VishwaFernando-CV.pdf';
                 link.download = 'VishwaFernando-CV.pdf';
-                
+
                 // Fallback to opening in new tab if download fails
                 link.onclick = (e) => {
                   // If download attribute is not supported, open in new tab
@@ -686,7 +765,7 @@ const Hero = () => {
                     window.open('/VishwaFernando-CV.pdf', '_blank');
                   }
                 };
-                
+
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
@@ -698,16 +777,16 @@ const Hero = () => {
         </div>
 
         <div className="hero-visual">
-          <div className="spline-container">
+          <div className="spline-container" ref={splineContainerRef}>
             <Spline
               scene="https://prod.spline.design/5JsnlbsegYxB4sfm/scene.splinecode"
             />
           </div>
-          <div className="hero-sphere"></div>
+          <div className="hero-sphere" ref={heroSphereRef}></div>
         </div>
       </div>
 
-      <div className="scroll-indicator" onClick={() => scrollToSection('about')}>
+      <div className="scroll-indicator" ref={scrollIndicatorRef} onClick={() => scrollToSection('about')}>
         <div className="scroll-text">Scroll</div>
         <div className="scroll-icon"></div>
       </div>

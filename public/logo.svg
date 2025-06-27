@@ -1,0 +1,44 @@
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="neon-glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="3.5" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+
+  <style>
+    .logo-text {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 95px;
+      font-weight: 800;
+      text-anchor: middle;
+      dominant-baseline: central;
+    }
+    .text-main { fill: #ffffff; }
+    .text-glitch-1 { fill: #08f7fe; }
+    .text-glitch-2 { fill: #ff00ff; }
+    .frame {
+      stroke: #08f7fe;
+      stroke-width: 4;
+      fill: none;
+    }
+  </style>
+
+  <!-- Frame -->
+  <g class="frame" filter="url(#neon-glow)">
+    <path d="M 20 50 L 20 20 L 50 20" />
+    <path d="M 180 50 L 180 20 L 150 20" />
+    <path d="M 20 150 L 20 180 L 50 180" />
+    <path d="M 180 150 L 180 180 L 150 180" />
+  </g>
+
+  <!-- Text with Glitch Effect -->
+  <g transform="translate(100 100)">
+    <text x="1.5" y="-1.5" class="logo-text text-glitch-1" filter="url(#neon-glow)">VF</text>
+    <text x="-1.5" y="1.5" class="logo-text text-glitch-2" filter="url(#neon-glow)">VF</text>
+    <text class="logo-text text-main">VF</text>
+  </g>
+</svg>

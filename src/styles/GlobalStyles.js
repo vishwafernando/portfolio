@@ -4,8 +4,8 @@ const GlobalStyles = createGlobalStyle`
   :root {
     --neon-pink: #ff2e63;
     --neon-blue: #08f7fe;
-      --neon-yellow: #f7df1e;
-      --neon-white: #ffffff;
+    --neon-yellow: #f7df1e;
+    --neon-white: #ffffff;
     --neon-purple: #7122fa;
     --neon-green: #48ff00;
     --dark-bg: #0a0a0b;

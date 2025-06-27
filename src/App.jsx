@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -7,7 +7,9 @@ import Hero from './components/Hero';
 import About from './components/About';
 import Projects from './components/Projects';
 import Contact from './components/Contact';
+import Footer from './components/Footer';
 import Nav from './components/Nav';
+import Loading from './components/Loading';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -28,6 +30,9 @@ const StyledMain = styled.main`
 `;
 
 const App = () => {
+  const [isLoading, setIsLoading] = useState(true);
+  const [startAnimations, setStartAnimations] = useState(false);
+
   useEffect(() => {
     console.log('App component mounted');
     gsap.registerPlugin(ScrollTrigger);
@@ -43,18 +48,29 @@ const App = () => {
     };
   }, []);
 
-  console.log('App component rendering');
+  const handleLoadComplete = () => {
+    setIsLoading(false);
+    // Delay to ensure loading screen fade out completes (800ms fade + buffer)
+    setTimeout(() => {
+      console.log('Setting startAnimations to true');
+      setStartAnimations(true);
+    }, 10);
+  };
+
+  console.log('App component rendering', { isLoading, startAnimations });
 
   return (
     <>
       <GlobalStyles />
+      {isLoading && <Loading onLoadComplete={handleLoadComplete} />}
       <Nav />
       <StyledMain>
-        <Hero />
+        <Hero startAnimations={startAnimations} />
         <About />
         <Projects />
         <Contact />
       </StyledMain>
+      <Footer />
     </>
   );
 };
