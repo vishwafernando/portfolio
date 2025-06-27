@@ -55,7 +55,7 @@ const LoadingContainer = styled.div`
   z-index: 9999;
   transition: opacity 0.8s ease-out, visibility 0.8s ease-out;
   
-  ${props => props.isLoading === false && `
+  ${props => props.$isLoading === false && `
     animation: ${fadeOut} 0.8s ease-out forwards;
   `}
 
@@ -142,7 +142,7 @@ const ProgressBarContainer = styled.div`
 
 const ProgressBar = styled.div`
   height: 100%;
-  width: ${props => props.progress}%;
+  width: ${props => props.$progress}%;
   background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
   border-radius: 2px;
   transition: width 0.3s ease;
@@ -219,13 +219,13 @@ const Loading = ({ onLoadComplete }) => {
   }
 
   return (
-    <LoadingContainer isLoading={isLoading}>
+    <LoadingContainer $isLoading={isLoading}>
       <LoadingContent>
         <LoadingSpinner />
         <LoadingText>{loadingText}</LoadingText>
         <LoadingSubText>Welcome to my Portfolio</LoadingSubText>
         <ProgressBarContainer>
-          <ProgressBar progress={progress} />
+          <ProgressBar $progress={progress} />
         </ProgressBarContainer>
         <ProgressText>{Math.round(progress)}%</ProgressText>
       </LoadingContent>

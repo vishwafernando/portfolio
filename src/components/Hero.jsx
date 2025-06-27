@@ -1,10 +1,123 @@
-import { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { gsap } from 'gsap';
 import { Canvas, useThree } from '@react-three/fiber';
 import { OrbitControls, Stars } from '@react-three/drei';
 import SplitType from 'split-type';
-import Spline from '@splinetool/react-spline';
+
+// Error Boundary for Spline Component
+class SplineErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError(error) {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error, errorInfo) {
+    // Only log non-WebGL errors to avoid spam
+    if (!error.message.includes('WebGL') && !error.message.includes('GL_INVALID')) {
+      console.warn('Spline Error Boundary caught an error:', error, errorInfo);
+    }
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div style={{
+          width: '100%',
+          height: '100%',
+          background: 'radial-gradient(circle, rgba(113, 34, 250, 0.1), rgba(8, 247, 254, 0.1), transparent 70%)',
+          borderRadius: '50%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          color: 'rgba(255, 255, 255, 0.5)',
+          fontSize: '0.8rem'
+        }}>
+          3D Model Error
+        </div>
+      );
+    }
+
+    return this.props.children;
+  }
+}
+
+// Lazy load Spline to avoid Three.js conflicts
+let Spline = null;
+const loadSpline = async () => {
+  if (!Spline) {
+    try {
+      const SplineModule = await import('@splinetool/react-spline');
+      // Handle both default and named exports
+      Spline = SplineModule.default || SplineModule.Spline || SplineModule;
+      
+      // Validate that we got a valid component
+      if (!Spline || (typeof Spline !== 'function' && !Spline.$$typeof)) {
+        throw new Error('Invalid Spline component loaded');
+      }
+    } catch (error) {
+      console.warn('Failed to load Spline:', error);
+      Spline = null;
+    }
+  }
+  return Spline;
+};
+
+// Suppress Three.js warnings in development
+if (process.env.NODE_ENV === 'development') {
+  const originalConsoleWarn = console.warn;
+  const originalConsoleError = console.error;
+  
+  console.warn = (...args) => {
+    if (
+      typeof args[0] === 'string' && 
+      (args[0].includes('Multiple instances of Three.js') || 
+       args[0].includes('Missing property') ||
+       args[0].includes('GL_INVALID_FRAMEBUFFER_OPERATION') ||
+       args[0].includes('GL_INVALID_VALUE') ||
+       args[0].includes('GL_INVALID_OPERATION') ||
+       args[0].includes('GL_INVALID_ENUM') ||
+       args[0].includes('glTexStorage2D') ||
+       args[0].includes('glClear') ||
+       args[0].includes('glClearBufferfv') ||
+       args[0].includes('glDrawElements') ||
+       args[0].includes('glDrawArrays') ||
+       args[0].includes('glGetParameter') ||
+       args[0].includes('Framebuffer is incomplete') ||
+       args[0].includes('Attachment has zero size') ||
+       args[0].includes('Texture dimensions must all be greater than zero') ||
+       args[0].includes('Invalid WebGL context') ||
+       args[0].includes('Canvas created with zero dimensions') ||
+       args[0].includes('WebGL context lost') ||
+       args[0].includes('ForwardRef'))
+    ) {
+      return; // Suppress these specific warnings
+    }
+    originalConsoleWarn.apply(console, args);
+  };
+  
+  console.error = (...args) => {
+    if (
+      typeof args[0] === 'string' && 
+      (args[0].includes('ForwardRef') ||
+       args[0].includes('Missing property') ||
+       args[0].includes('GL_INVALID_FRAMEBUFFER_OPERATION') ||
+       args[0].includes('GL_INVALID_VALUE') ||
+       args[0].includes('GL_INVALID_OPERATION') ||
+       args[0].includes('GL_INVALID_ENUM') ||
+       args[0].includes('glGetParameter') ||
+       args[0].includes('Invalid WebGL context Error') ||
+       args[0].includes('WebGL'))
+    ) {
+      return; // Suppress these specific errors
+    }
+    originalConsoleError.apply(console, args);
+  };
+}
 
 // Styles
 const StyledHero = styled.section`
@@ -544,20 +657,298 @@ const StyledHero = styled.section`
   }
 `;
 
-// 3D Background component
-const HeroBackground = () => {
-  const { camera } = useThree();
+// WebGL Error Fallback Component
+const WebGLFallback = () => (
+  <div style={{
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+    background: 'var(--darker-bg)' 
+  }} />
+);
+
+// Safe Canvas Wrapper that prevents zero-sized rendering
+const SafeCanvasWrapper = ({ children, canvasSize, webglSupported, canvasReady }) => {
+  const [isReady, setIsReady] = useState(false);
+  
+  useEffect(() => {
+    // Only mark as ready when all conditions are met
+    const ready = webglSupported && 
+                  canvasReady && 
+                  canvasSize.width > 0 && 
+                  canvasSize.height > 0;
+    
+    // Add a small delay to ensure stability
+    if (ready) {
+      const timeout = setTimeout(() => setIsReady(true), 50);
+      return () => clearTimeout(timeout);
+    } else {
+      setIsReady(false);
+    }
+  }, [webglSupported, canvasReady, canvasSize]);
+  
+  if (!isReady) {
+    return <WebGLFallback />;
+  }
+  
+  return children;
+};
+
+// Dimension validator hook
+const useDimensionValidator = (ref, threshold = 10) => {
+  const [isValid, setIsValid] = useState(false);
+  
+  useEffect(() => {
+    if (!ref.current) return;
+    
+    const validateDimensions = () => {
+      const rect = ref.current.getBoundingClientRect();
+      const valid = rect.width >= threshold && rect.height >= threshold;
+      setIsValid(valid);
+    };
+    
+    validateDimensions();
+    
+    const observer = new ResizeObserver(validateDimensions);
+    observer.observe(ref.current);
+    
+    return () => observer.disconnect();
+  }, [ref, threshold]);
+  
+  return isValid;
+};
+
+// Spline Model Component with error handling
+const SplineModel = ({ scene, isVisible }) => {
+  const [SplineComponent, setSplineComponent] = useState(null);
+  const [error, setError] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    const handleMouseMove = (event) => {
-      // Get mouse position relative to viewport
-      const x = (event.clientX / window.innerWidth) * 2 - 1;
-      const y = -(event.clientY / window.innerHeight) * 2 + 1;
+    setMounted(true);
+    return () => setMounted(false);
+  }, []);
 
-      // Apply subtle movement to camera position
-      camera.position.x = x * 2;
-      camera.position.y = y * 2;
-      camera.lookAt(0, 0, 0);
+  useEffect(() => {
+    // Reset states when visibility changes
+    if (!isVisible) {
+      setError(false);
+      setIsLoading(false);
+      return;
+    }
+
+    // Only load Spline when it's supposed to be visible and component is mounted
+    if (!SplineComponent && !isLoading && !error && mounted) {
+      setIsLoading(true);
+      loadSpline()
+        .then(LoadedSpline => {
+          if (LoadedSpline && mounted) {
+            // Ensure we have a valid React component
+            if (typeof LoadedSpline === 'function' || (LoadedSpline && LoadedSpline.$$typeof)) {
+              setSplineComponent(() => LoadedSpline);
+            } else {
+              console.warn('Loaded Spline component is not valid');
+              setError(true);
+            }
+          } else if (!mounted) {
+            // Component was unmounted, don't update state
+            return;
+          } else {
+            setError(true);
+          }
+        })
+        .catch((err) => {
+          console.warn('Failed to load Spline component:', err);
+          if (mounted) {
+            setError(true);
+          }
+        })
+        .finally(() => {
+          if (mounted) {
+            setIsLoading(false);
+          }
+        });
+    }
+  }, [isVisible, SplineComponent, isLoading, error, mounted]);
+
+  // Don't render anything if not visible
+  if (!isVisible) {
+    return null;
+  }
+
+  if (error) {
+    return (
+      <div style={{
+        width: '100%',
+        height: '100%',
+        background: 'radial-gradient(circle, rgba(113, 34, 250, 0.1), rgba(8, 247, 254, 0.1), transparent 70%)',
+        borderRadius: '50%',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        color: 'rgba(255, 255, 255, 0.5)',
+        fontSize: '0.8rem'
+      }}>
+        3D Model Unavailable
+      </div>
+    );
+  }
+
+  if (isLoading || !SplineComponent) {
+    return (
+      <div style={{
+        width: '100%',
+        height: '100%',
+        background: 'radial-gradient(circle, rgba(113, 34, 250, 0.1), rgba(8, 247, 254, 0.1), transparent 70%)',
+        borderRadius: '50%',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        color: 'rgba(255, 255, 255, 0.5)',
+        fontSize: '0.8rem'
+      }}>
+        Loading 3D Model...
+      </div>
+    );
+  }
+
+  // Render with additional error boundary
+  return (
+    <SafeSplineWrapper
+      SplineComponent={SplineComponent}
+      scene={scene}
+      onLoad={() => {
+        console.log('Spline model loaded successfully');
+      }}
+      onError={(error) => {
+        console.warn('Spline model error:', error);
+        setError(true);
+      }}
+      style={{
+        width: '100%',
+        height: '100%',
+        borderRadius: '50%'
+      }}
+    />
+  );
+};
+
+// Safe Spline Wrapper to handle ForwardRef issues
+const SafeSplineWrapper = ({ SplineComponent, scene, onLoad, onError, style }) => {
+  const [hasError, setHasError] = useState(false);
+
+  // Validate SplineComponent before rendering
+  if (!SplineComponent || (typeof SplineComponent !== 'function' && !SplineComponent.$$typeof)) {
+    return (
+      <div style={{
+        ...style,
+        background: 'radial-gradient(circle, rgba(113, 34, 250, 0.1), rgba(8, 247, 254, 0.1), transparent 70%)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        color: 'rgba(255, 255, 255, 0.5)',
+        fontSize: '0.8rem'
+      }}>
+        Invalid 3D Component
+      </div>
+    );
+  }
+
+  if (hasError) {
+    return (
+      <div style={{
+        ...style,
+        background: 'radial-gradient(circle, rgba(113, 34, 250, 0.1), rgba(8, 247, 254, 0.1), transparent 70%)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        color: 'rgba(255, 255, 255, 0.5)',
+        fontSize: '0.8rem'
+      }}>
+        3D Model Error
+      </div>
+    );
+  }
+
+  try {
+    // Create element with proper error handling
+    return React.createElement(SplineComponent, {
+      scene,
+      onLoad: () => {
+        try {
+          onLoad && onLoad();
+        } catch (err) {
+          console.warn('Spline onLoad error:', err);
+          setHasError(true);
+        }
+      },
+      onError: (error) => {
+        console.warn('Spline onError:', error);
+        setHasError(true);
+        onError && onError(error);
+      },
+      style
+    });
+  } catch (error) {
+    console.warn('SafeSplineWrapper render error:', error);
+    setHasError(true);
+    return (
+      <div style={{
+        ...style,
+        background: 'radial-gradient(circle, rgba(113, 34, 250, 0.1), rgba(8, 247, 254, 0.1), transparent 70%)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        color: 'rgba(255, 255, 255, 0.5)',
+        fontSize: '0.8rem'
+      }}>
+        3D Model Error
+      </div>
+    );
+  }
+};
+
+// 3D Background component
+const HeroBackground = () => {
+  const { camera, size, gl } = useThree();
+  const [isValid, setIsValid] = useState(true);
+
+  useEffect(() => {
+    // Check if the canvas and WebGL context are valid
+    if (!gl || !size || size.width === 0 || size.height === 0) {
+      setIsValid(false);
+      return;
+    }
+    
+    // Validate WebGL context
+    try {
+      const contextLost = gl.isContextLost && gl.isContextLost();
+      setIsValid(!contextLost);
+    } catch (error) {
+      console.warn('WebGL context validation error:', error);
+      setIsValid(false);
+    }
+  }, [gl, size]);
+
+  useEffect(() => {
+    if (!isValid) return;
+    
+    const handleMouseMove = (event) => {
+      try {
+        // Get mouse position relative to viewport
+        const x = (event.clientX / window.innerWidth) * 2 - 1;
+        const y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+        // Apply subtle movement to camera position
+        camera.position.x = x * 2;
+        camera.position.y = y * 2;
+        camera.lookAt(0, 0, 0);
+      } catch (error) {
+        console.warn('Camera movement error:', error);
+      }
     };
 
     window.addEventListener('mousemove', handleMouseMove);
@@ -565,7 +956,12 @@ const HeroBackground = () => {
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
     };
-  }, [camera]);
+  }, [camera, isValid]);
+
+  // Don't render anything if context is invalid
+  if (!isValid) {
+    return null;
+  }
 
   return (
     <>
@@ -603,9 +999,101 @@ const Hero = ({ startAnimations = false }) => {
   const ctaContainerRef = useRef(null);
   const heroSphereRef = useRef(null);
   const splineContainerRef = useRef(null);
-  const scrollIndicatorRef = useRef(null);  const [currentRole, setCurrentRole] = useState('Developer');
+  const scrollIndicatorRef = useRef(null);
+  const [currentRole, setCurrentRole] = useState('Developer');
   const [animationsStarted, setAnimationsStarted] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const [webglSupported, setWebglSupported] = useState(true);
+  const [canvasReady, setCanvasReady] = useState(false);
+  const [shouldShow3D, setShouldShow3D] = useState(false);
+  const [canvasSize, setCanvasSize] = useState({ width: 0, height: 0 });
+  const canvasContainerRef = useRef(null);
+  const isContainerValid = useDimensionValidator(canvasContainerRef);
   const roles = ['Developer', 'Designer'];
+
+  useEffect(() => {
+    let resizeTimeout;
+    let resizeObserver;
+    
+    // Check if device is mobile with debouncing
+    const checkMobile = () => {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => {
+        const newIsMobile = window.innerWidth <= 992;
+        setIsMobile(newIsMobile);
+      }, 150); // Debounce resize events
+    };
+    
+    // Check WebGL support
+    const checkWebGL = () => {
+      try {
+        const canvas = document.createElement('canvas');
+        const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+        const supported = !!gl;
+        setWebglSupported(supported);
+      } catch (error) {
+        console.warn('WebGL not supported:', error);
+        setWebglSupported(false);
+      }
+    };
+    
+    // Monitor canvas container size
+    const observeCanvasSize = () => {
+      if (canvasContainerRef.current && window.ResizeObserver) {
+        resizeObserver = new ResizeObserver((entries) => {
+          const entry = entries[0];
+          if (entry) {
+            const { width, height } = entry.contentRect;
+            setCanvasSize({ width, height });
+            setCanvasReady(width > 0 && height > 0);
+          }
+        });
+        
+        resizeObserver.observe(canvasContainerRef.current);
+      } else {
+        // Fallback for browsers without ResizeObserver
+        const updateCanvasSize = () => {
+          if (canvasContainerRef.current) {
+            const rect = canvasContainerRef.current.getBoundingClientRect();
+            setCanvasSize({ width: rect.width, height: rect.height });
+            setCanvasReady(rect.width > 0 && rect.height > 0);
+          }
+        };
+        
+        updateCanvasSize();
+        window.addEventListener('resize', updateCanvasSize);
+        
+        return () => window.removeEventListener('resize', updateCanvasSize);
+      }
+    };
+    
+    checkMobile();
+    checkWebGL();
+    window.addEventListener('resize', checkMobile);
+    
+    // Set canvas ready after a brief delay to ensure DOM is ready
+    setTimeout(() => {
+      observeCanvasSize();
+    }, 100);
+    
+    return () => {
+      window.removeEventListener('resize', checkMobile);
+      clearTimeout(resizeTimeout);
+      if (resizeObserver) {
+        resizeObserver.disconnect();
+      }
+    };
+  }, []);
+
+  // Update 3D visibility when mobile or WebGL state changes
+  useEffect(() => {
+    // Add a small delay to prevent rapid state changes during resize
+    const timeout = setTimeout(() => {
+      setShouldShow3D(!isMobile && webglSupported);
+    }, 200);
+    
+    return () => clearTimeout(timeout);
+  }, [isMobile, webglSupported]);
 
   useEffect(() => {
     // Only start animations when loading is complete
@@ -694,22 +1182,25 @@ const Hero = ({ startAnimations = false }) => {
       }
 
 
-      if (heroSphereRef.current) {
-        tl.fromTo(
-          heroSphereRef.current,
-          { opacity: 0, scale: 0.8 },
-          { opacity: 1, scale: 1, duration: 1.2, ease: 'power3.out' },
-          '-=1'
-        );
-      }
+      // Animate 3D elements only if they should be shown
+      if (shouldShow3D) {
+        if (heroSphereRef.current) {
+          tl.fromTo(
+            heroSphereRef.current,
+            { opacity: 0, scale: 0.8 },
+            { opacity: 1, scale: 1, duration: 1.2, ease: 'power3.out' },
+            '-=1'
+          );
+        }
 
-      if (splineContainerRef.current) {
-        tl.fromTo(
-          splineContainerRef.current,
-          { opacity: 0, scale: 0.8 },
-          { opacity: 1, scale: 1, duration: 1.2, ease: 'power3.out' },
-          '-=1'
-        );
+        if (splineContainerRef.current) {
+          tl.fromTo(
+            splineContainerRef.current,
+            { opacity: 0, scale: 0.8 },
+            { opacity: 1, scale: 1, duration: 1.2, ease: 'power3.out' },
+            '-=1'
+          );
+        }
       }
 
       // Scroll indicator
@@ -732,7 +1223,7 @@ const Hero = ({ startAnimations = false }) => {
     return () => {
       clearTimeout(animationTimeout);
     };
-  }, [startAnimations, animationsStarted, roles]);
+  }, [startAnimations, animationsStarted, roles, shouldShow3D]);
 
   const scrollToSection = (sectionId) => {
     const element = document.getElementById(sectionId);
@@ -743,10 +1234,92 @@ const Hero = ({ startAnimations = false }) => {
 
   return (
     <StyledHero ref={heroRef} id="home">
-      <div className="three-container">
-        <Canvas camera={{ position: [0, 0, 15], fov: 75 }}>
-          <HeroBackground />
-        </Canvas>
+      <div className="three-container" ref={canvasContainerRef}>
+        <SafeCanvasWrapper 
+          canvasSize={canvasSize} 
+          webglSupported={webglSupported} 
+          canvasReady={canvasReady && isContainerValid}
+        >
+          <Canvas 
+            camera={{ position: [0, 0, 15], fov: 75 }}
+            onCreated={(state) => {
+              try {
+                // Comprehensive validation before proceeding
+                if (!state || !state.gl || !state.size) {
+                  return;
+                }
+                
+                const { width, height } = state.size;
+                if (width === 0 || height === 0) {
+                  return;
+                }
+                
+                // Enhanced WebGL context validation
+                const gl = state.gl;
+                if (!gl || typeof gl.getParameter !== 'function') {
+                  return;
+                }
+                
+                // Check if context is lost
+                if (gl.isContextLost && gl.isContextLost()) {
+                  return;
+                }
+                
+                // Test basic WebGL functionality with safer checks
+                try {
+                  // First check if we can access basic WebGL constants
+                  if (typeof gl.VENDOR === 'undefined' || typeof gl.VERSION === 'undefined') {
+                    return;
+                  }
+                  
+                  // Check drawing buffer dimensions as additional validation
+                  if (gl.drawingBufferWidth === 0 || gl.drawingBufferHeight === 0) {
+                    return;
+                  }
+                  
+                  // Only call getParameter if we're confident the context is valid
+                  const vendor = gl.getParameter(gl.VENDOR);
+                  const version = gl.getParameter(gl.VERSION);
+                  if (!vendor || !version) {
+                    return;
+                  }
+                } catch (contextError) {
+                  // Context is not fully functional, fail silently
+                  return;
+                }
+                
+                // Add context loss listeners only after validation
+                const canvas = gl.domElement;
+                if (canvas) {
+                  canvas.addEventListener('webglcontextlost', (event) => {
+                    event.preventDefault();
+                    setWebglSupported(false);
+                  });
+                  
+                  canvas.addEventListener('webglcontextrestored', () => {
+                    setWebglSupported(true);
+                  });
+                }
+              } catch (error) {
+                // Silently handle any errors in onCreated to prevent console spam
+                return;
+              }
+            }}
+            onError={(error) => {
+              setWebglSupported(false);
+            }}
+            gl={{
+              antialias: true,
+              alpha: true,
+              powerPreference: "high-performance",
+              failIfMajorPerformanceCaveat: false,
+              preserveDrawingBuffer: false
+            }}
+            resize={{ scroll: false, debounce: { scroll: 50, resize: 50 } }}
+          >
+            <HeroBackground />
+          </Canvas>
+        </SafeCanvasWrapper>
       </div>
 
       <div className="container">
@@ -806,12 +1379,20 @@ const Hero = ({ startAnimations = false }) => {
         </div>
 
         <div className="hero-visual">
-          <div className="spline-container" ref={splineContainerRef}>
-            <Spline
-              scene="https://prod.spline.design/5JsnlbsegYxB4sfm/scene.splinecode"
-            />
-          </div>
-          <div className="hero-sphere" ref={heroSphereRef}></div>
+          {shouldShow3D && (
+            <>
+              <div className="spline-container" ref={splineContainerRef}>
+                <SplineErrorBoundary>
+                  <SplineModel
+                    key={`spline-${shouldShow3D}`}
+                    scene="https://prod.spline.design/5JsnlbsegYxB4sfm/scene.splinecode"
+                    isVisible={shouldShow3D}
+                  />
+                </SplineErrorBoundary>
+              </div>
+              <div className="hero-sphere" ref={heroSphereRef}></div>
+            </>
+          )}
         </div>
       </div>
 
