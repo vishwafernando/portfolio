@@ -6,20 +6,152 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 // Register GSAP plugins
 gsap.registerPlugin(ScrollTrigger);
 
-// Skills data
+// Skills data with icons
 const skills = [
-  { name: 'HTML 5', color: '#e44d26' },
-  { name: 'CSS', color: '#1572b6' },
-  { name: 'React', color: '#61dafb' },
-  { name: 'Node.js', color: '#339933' },
-  { name: 'Javascript', color: '#f0db4f' },
-  { name: 'Java', color: '#ea2d2e' },
-  { name: 'MySQL', color: '#00618a' },
-  { name: 'Git', color: '#f34f29' },
-  { name: 'Github', color: '#eff6ff' },
-  { name: 'VsCode', color: '#25aef3' },
-  { name: 'Photoshop', color: '#9b4f96' },
-  { name: 'Python', color: '#FF6B6B' }
+  { 
+    name: 'HTML', 
+    color: '#e44d26',
+    icon: (
+      <img 
+        src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/html5/html5-original.svg" 
+        alt="HTML5" 
+        width="48" 
+        height="48"
+      />
+    )
+  },
+  { 
+    name: 'CSS', 
+    color: '#1572b6',
+    icon: (
+      <img 
+        src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/css3/css3-original.svg" 
+        alt="CSS3" 
+        width="48" 
+        height="48"
+      />
+    )
+  },
+  { 
+    name: 'React', 
+    color: '#61dafb',
+    icon: (
+      <img 
+        src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/react/react-original.svg" 
+        alt="React" 
+        width="48" 
+        height="48"
+      />
+    )
+  },
+  { 
+    name: 'Node.js', 
+    color: '#339933',
+    icon: (
+      <img 
+        src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nodejs/nodejs-original.svg" 
+        alt="Node.js" 
+        width="48" 
+        height="48"
+      />
+    )
+  },
+  { 
+    name: 'JavaScript', 
+    color: '#f0db4f',
+    icon: (
+      <img 
+        src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/javascript/javascript-original.svg" 
+        alt="JavaScript" 
+        width="48" 
+        height="48"
+      />
+    )
+  },
+  { 
+    name: 'Java', 
+    color: '#ea2d2e',
+    icon: (
+      <img 
+        src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/java/java-original.svg" 
+        alt="Java" 
+        width="48" 
+        height="48"
+      />
+    )
+  },
+  { 
+    name: 'MySQL', 
+    color: '#00618a',
+    icon: (
+      <img 
+        src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/mysql/mysql-original.svg" 
+        alt="MySQL" 
+        width="48" 
+        height="48"
+      />
+    )
+  },
+  { 
+    name: 'Git', 
+    color: '#f34f29',
+    icon: (
+      <img 
+        src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/git/git-original.svg" 
+        alt="Git" 
+        width="48" 
+        height="48"
+      />
+    )
+  },
+  { 
+    name: 'GitHub', 
+    color: '#eff6ff',
+    icon: (
+      <img 
+        src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/github/github-original.svg" 
+        alt="GitHub" 
+        width="48" 
+        height="48"
+      />
+    )
+  },
+  { 
+    name: 'VS Code', 
+    color: '#007acc',
+    icon: (
+      <img 
+        src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vscode/vscode-original.svg" 
+        alt="VS Code" 
+        width="48" 
+        height="48"
+      />
+    )
+  },
+  { 
+    name: 'Photoshop', 
+    color: '#31a8ff',
+    icon: (
+      <img 
+        src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/photoshop/photoshop-original.svg" 
+        alt="Photoshop" 
+        width="48" 
+        height="48"
+      />
+    )
+  },
+  { 
+    name: 'Python', 
+    color: '#3776ab',
+    icon: (
+      <img 
+        src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/python/python-original.svg" 
+        alt="Python" 
+        width="48" 
+        height="48"
+      />
+    )
+  }
 ];
 
 // Styled components
@@ -132,56 +264,275 @@ const StyledAbout = styled.section`
     }
   }
   
+  .skills-section {
+    margin-top: -8rem;
+    
+    @media (max-width: 768px) {
+      margin-top: 2rem;
+    }
+    
+    .skills-title {
+      font-size: 2.2rem;
+      color: var(--text-primary);
+      margin-bottom: 1.5rem;
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 700;
+      text-align: center;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      position: relative;
+      text-shadow: 0 0 20px rgba(8, 247, 254, 0.3);
+      
+      &::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 120%;
+        height: 120%;
+        background: radial-gradient(
+          ellipse,
+          rgba(8, 247, 254, 0.1) 0%,
+          transparent 70%
+        );
+        z-index: -1;
+      }
+      
+      &::after {
+        content: '';
+        position: absolute;
+        bottom: -12px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 3px;
+        background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple), var(--neon-blue));
+        border-radius: 3px;
+        box-shadow: 0 0 15px rgba(8, 247, 254, 0.6);
+      }
+    }
+  }
+  
   .skills-container {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1.5rem;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+    margin-top: 2rem;
     
-    @media (max-width: 992px) {
+    @media (max-width: 1200px) {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+    
+    @media (max-width: 768px) {
       grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
     }
     
     @media (max-width: 480px) {
       grid-template-columns: 1fr;
+      gap: 1rem;
     }
   }
   
   .skill-box {
-    background: rgba(10, 10, 11, 0.5);
-    border: 1px solid rgba(8, 247, 254, 0.2);
-    border-radius: 8px;
-    padding: 1.5rem;
+    background: linear-gradient(135deg, rgba(12, 12, 15, 0.95), rgba(20, 20, 25, 0.8));
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 2rem 1.5rem;
     text-align: center;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    cursor: default;
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    cursor: pointer;
     position: relative;
     overflow: hidden;
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(25px);
+    height: 140px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 
+      0 8px 32px rgba(0, 0, 0, 0.4),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
     
+    /* Animated gradient border */
     &::before {
       content: '';
       position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 2px;
-      background: ${props => props.color || 'var(--neon-blue)'};
-      box-shadow: 0 0 15px ${props => props.color || 'var(--neon-blue)'};
-      z-index: 1;
+      inset: 0;
+      padding: 2px;
+      background: linear-gradient(
+        45deg,
+        transparent,
+        ${props => props.color || '#08f7fe'}30,
+        transparent,
+        ${props => props.color || '#08f7fe'}30,
+        transparent
+      );
+      border-radius: 20px;
+      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      mask-composite: xor;
+      -webkit-mask-composite: xor;
+      animation: borderRotate 4s linear infinite;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+    
+    /* Glowing background effect */
+    &::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      background: radial-gradient(
+        circle,
+        ${props => props.color || '#08f7fe'}15,
+        transparent 70%
+      );
+      transform: translate(-50%, -50%);
+      transition: all 0.5s ease;
+      border-radius: 50%;
+      z-index: -1;
     }
     
     &:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-      border-color: ${props => props.color || 'var(--neon-blue)'};
+      transform: translateY(-12px) scale(1.03);
+      box-shadow: 
+        0 25px 50px rgba(0, 0, 0, 0.5),
+        0 0 40px ${props => props.color || '#08f7fe'}25,
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+      background: linear-gradient(135deg, rgba(15, 15, 20, 0.98), rgba(25, 25, 35, 0.9));
+      border-color: ${props => props.color || '#08f7fe'}60;
+      
+      &::before {
+        opacity: 1;
+      }
+      
+      &::after {
+        width: 140px;
+        height: 140px;
+      }
+      
+      .skill-icon {
+        opacity: 0.25;
+        transform: scale(0.75) translateY(-8px);
+        filter: blur(0.5px);
+      }
+      
+      .skill-name {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      
+      .skill-progress {
+        opacity: 1;
+        transform: scaleX(1);
+      }
+    }
+    
+    .skill-icon {
+      transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      opacity: 1;
+      transform: scale(1);
+      filter: drop-shadow(0 0 15px ${props => props.color || '#08f7fe'}40);
+      z-index: 2;
+      
+      img {
+        width: 52px;
+        height: 52px;
+        object-fit: contain;
+        filter: brightness(1.2) contrast(1.3) saturate(1.1);
+      }
     }
     
     .skill-name {
       font-family: 'Poppins', sans-serif;
-      font-size: 1.2rem;
-      color: ${props => props.color || 'var(--neon-blue)'};
+      font-size: 0.95rem;
+      color: var(--text-primary);
       margin: 0;
-      font-weight: 500;
+      font-weight: 600;
+      position: absolute;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      text-shadow: 
+        0 0 20px ${props => props.color || '#08f7fe'}60,
+        0 2px 4px rgba(0, 0, 0, 0.3);
+      letter-spacing: 0.5px;
+      z-index: 2;
+      text-transform: uppercase;
+      white-space: nowrap;
+      max-width: 90%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      text-align: center;
+    }
+    
+    .skill-progress {
+      position: absolute;
+      bottom: 12px;
+      left: 50%;
+      transform: translateX(-50%) scaleX(0);
+      width: 70px;
+      height: 4px;
+      background: linear-gradient(
+        90deg,
+        ${props => props.color || '#08f7fe'},
+        ${props => props.color || '#08f7fe'}60,
+        ${props => props.color || '#08f7fe'}
+      );
+      border-radius: 3px;
+      opacity: 0;
+      transition: all 0.5s ease 0.1s;
+      box-shadow: 
+        0 0 15px ${props => props.color || '#08f7fe'}50,
+        0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+  }
+  
+  @keyframes borderRotate {
+    0% {
+      background: linear-gradient(
+        0deg,
+        transparent,
+        currentColor,
+        transparent
+      );
+    }
+    25% {
+      background: linear-gradient(
+        90deg,
+        transparent,
+        currentColor,
+        transparent
+      );
+    }
+    50% {
+      background: linear-gradient(
+        180deg,
+        transparent,
+        currentColor,
+        transparent
+      );
+    }
+    75% {
+      background: linear-gradient(
+        270deg,
+        transparent,
+        currentColor,
+        transparent
+      );
+    }
+    100% {
+      background: linear-gradient(
+        360deg,
+        transparent,
+        currentColor,
+        transparent
+      );
     }
   }
 
@@ -362,6 +713,7 @@ const About = () => {
           </div>
           
           <div className="skills-section" ref={skillsRef}>
+            <h3 className="skills-title">Technologies & Tools</h3>
             <div className="skills-container">
               {skills.map((skill, index) => (
                 <div 
@@ -369,7 +721,13 @@ const About = () => {
                   key={index}
                   style={{ '--skill-color': skill.color }}
                 >
-                  <h3 className="skill-name" style={{ color: skill.color }}>{skill.name}</h3>
+                  <div className="skill-icon" style={{ color: skill.color }}>
+                    {skill.icon}
+                  </div>
+                  <h3 className="skill-name" style={{ color: skill.color }}>
+                    {skill.name}
+                  </h3>
+                  <div className="skill-progress" style={{ background: `linear-gradient(90deg, ${skill.color}, ${skill.color}80)` }}></div>
                 </div>
               ))}
             </div>

@@ -4,6 +4,7 @@ import { gsap } from 'gsap';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, Stars } from '@react-three/drei';
 import SplitType from 'split-type';
+import Spline from '@splinetool/react-spline';
 
 // Styles
 const StyledHero = styled.section`
@@ -61,12 +62,17 @@ const StyledHero = styled.section`
     justify-content: center;
     align-items: center;
     height: 100%;
+    width: 500px;
   }
 
   .hero-sphere {
-    position: relative;
+    position: absolute;
+    top: 50%;
+    left: 65%;
+    transform: translate(-50%, -50%);
     width: 400px;
     height: 400px;
+    z-index: 1;
     
     &::before {
       content: '';
@@ -89,6 +95,37 @@ const StyledHero = styled.section`
       box-sizing: border-box;
       filter: blur(4px);
       animation: rotateSphere 15s linear infinite;
+    }
+  }
+
+  .spline-container {
+    position: absolute;
+    top: 50%;
+    left: 75%;
+    transform: translate(-50%, -50%);
+    width: 500px;
+    height: 500px;
+    border-radius: 50%;
+    overflow: hidden;
+    z-index: 3;
+    
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(8, 247, 254, 0.1), transparent 70%);
+      pointer-events: none;
+      z-index: 2;
+    }
+    
+    canvas {
+      width: 100% !important;
+      height: 100% !important;
+      border-radius: 50%;
     }
   }
   
@@ -365,7 +402,7 @@ const StyledHero = styled.section`
     0% { transform: scale(1); opacity: 0.6; }
     100% { transform: scale(1.05); opacity: 0.8; }
   }
-  
+   
   @keyframes rotateSphere {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
@@ -430,6 +467,25 @@ const StyledHero = styled.section`
       .cta-button {
         width: 100%;
       }
+    }
+    
+    .hero-visual {
+      width: 300px;
+    }
+    
+    .spline-container {
+      width: 300px;
+      height: 300px;
+    }
+    
+    .hero-sphere {
+      width: 250px;
+      height: 250px;
+    }
+    
+    .scroll-indicator {
+      bottom: 20px;
+      margin-bottom: -1rem;
     }
   }
   
@@ -532,6 +588,12 @@ const Hero = () => {
         '-=1'
       )
       .fromTo(
+        '.spline-container',
+        { opacity: 0, scale: 0.8 },
+        { opacity: 1, scale: 1, duration: 1.2, ease: 'power3.out' },
+        '-=1'
+      )
+      .fromTo(
         '.scroll-indicator',
         { opacity: 0, y: -20 },
         { opacity: 0.7, y: 0, duration: 0.8, ease: 'power2.out' },
@@ -613,6 +675,11 @@ const Hero = () => {
         </div>
 
         <div className="hero-visual">
+          <div className="spline-container">
+            <Spline
+              scene="https://prod.spline.design/5JsnlbsegYxB4sfm/scene.splinecode"
+            />
+          </div>
           <div className="hero-sphere"></div>
         </div>
       </div>
