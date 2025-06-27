@@ -28,7 +28,7 @@ A modern, interactive portfolio website built with React, featuring stunning 3D 
 
 ### 3D Graphics
 - **React Three Fiber** - React renderer for Three.js
-- **@react-three/drei** - Useful helpers for React Three Fiber
+- **Spline** - Useful helpers for React Three Fiber
 - **Three.js** - 3D graphics library
 
 ### Additional Libraries
