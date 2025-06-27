@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import { gsap } from 'gsap';
@@ -10,55 +10,290 @@ const StyledProjects = styled.section`
   min-height: 100vh;
   padding: 8rem 5%;
   background: var(--dark-bg);
+  position: relative;
+  overflow: visible;
+  perspective: 3000px;
+  transform-style: preserve-3d;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+      radial-gradient(circle at 25% 25%, rgba(8, 247, 254, 0.1) 0%, transparent 50%),
+      radial-gradient(circle at 75% 75%, rgba(113, 34, 250, 0.1) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .floating-elements {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  .floating-shape {
+    position: absolute;
+    opacity: 0.1;
+    border-radius: 50%;
+    background: linear-gradient(45deg, var(--neon-blue), var(--neon-purple));
+    animation: floatAround 20s ease-in-out infinite;
+  }
+
+  .floating-shape:nth-child(1) {
+    width: 100px;
+    height: 100px;
+    top: 10%;
+    left: 10%;
+    animation-delay: 0s;
+  }
+
+  .floating-shape:nth-child(2) {
+    width: 60px;
+    height: 60px;
+    top: 70%;
+    right: 20%;
+    animation-delay: -7s;
+    background: linear-gradient(45deg, var(--neon-pink), var(--neon-green));
+  }
+
+  .floating-shape:nth-child(3) {
+    width: 80px;
+    height: 80px;
+    bottom: 20%;
+    left: 80%;
+    animation-delay: -14s;
+    background: linear-gradient(45deg, var(--neon-purple), var(--neon-blue));
+  }
+
+  @keyframes floatAround {
+    0%, 100% { transform: translate(0, 0) rotate(0deg); }
+    25% { transform: translate(30px, -40px) rotate(90deg); }
+    50% { transform: translate(-20px, -80px) rotate(180deg); }
+    75% { transform: translate(-50px, -20px) rotate(270deg); }
+  }
 
   h2 {
-    font-size: 3rem;
+    font-size: clamp(2.5rem, 6vw, 3.5rem);
     text-align: center;
     margin-bottom: 4rem;
     color: var(--neon-purple);
-    text-shadow: 0 0 10px var(--neon-purple);
+    text-shadow: 0 0 20px rgba(113, 34, 250, 0.5);
+    font-family: 'Orbitron', sans-serif;
+    position: relative;
+    z-index: 10;
+    
+    &::before {
+      content: '';
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 200px;
+      height: 4px;
+      background: linear-gradient(90deg, 
+        transparent, 
+        var(--neon-purple), 
+        var(--neon-blue), 
+        var(--neon-purple), 
+        transparent
+      );
+      border-radius: 2px;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+
+    &.animated::before {
+      opacity: 1;
+      animation: glowPulse 3s ease-in-out infinite;
+    }
+  }
+
+  @keyframes glowPulse {
+    0%, 100% { box-shadow: 0 0 5px var(--neon-purple); }
+    50% { box-shadow: 0 0 20px var(--neon-purple), 0 0 30px var(--neon-blue); }
   }
 
   .projects-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 2rem;
-    max-width: 1200px;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 4rem;
+    max-width: 1400px;
     margin: 0 auto;
+    position: relative;
+    z-index: 10;
+    perspective: 2000px;
+    transform-style: preserve-3d;
+    
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr;
+      gap: 3rem;
+      padding: 0 1rem;
+    }
   }
 `;
 
 const ProjectCard = styled(motion.div)`
   position: relative;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 15px;
+  background: rgba(10, 10, 15, 0.8);
+  border-radius: 20px;
   overflow: visible;
-  border: 1px solid var(--neon-blue);
-  z-index: 1;
+  border: 1px solid rgba(8, 247, 254, 0.2);
+  backdrop-filter: blur(10px);
+  transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transform-style: preserve-3d;
+  perspective: 2000px;
+  will-change: transform;
+  backface-visibility: hidden;
+  animation: glowPulse 4s ease-in-out infinite;
   
-  
-  &:hover .project-image {
-    transform: scale(2.1); /* 🔥 scale on hover */
-    z-index: 5;
-    box-shadow: 0 15px 40px rgba(8, 247, 254, 0.3); /* optional glow */
+  &::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, 
+      rgba(8, 247, 254, 0.3), 
+      rgba(113, 34, 250, 0.3), 
+      rgba(255, 46, 99, 0.3),
+      rgba(8, 247, 254, 0.3)
+    );
+    border-radius: 20px;
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    background-size: 400% 400%;
+    animation: gradientShift 8s ease infinite;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, 
+      rgba(255, 255, 255, 0.1) 0%, 
+      transparent 50%, 
+      rgba(8, 247, 254, 0.1) 100%
+    );
+    border-radius: 20px;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    pointer-events: none;
   }
 
   &:hover {
-    z-index: 10;
+    transform: translateY(-25px) rotateX(8deg) rotateY(8deg) scale(1.03);
+    box-shadow: 
+      0 50px 100px rgba(0, 0, 0, 0.5),
+      0 25px 60px rgba(8, 247, 254, 0.4),
+      0 0 80px rgba(8, 247, 254, 0.3);
+    border-color: var(--neon-blue);
+    z-index: 50;
+    
+    &::before {
+      opacity: 1;
+    }
+    
+    &::after {
+      opacity: 1;
+    }
+    
+    .project-image {
+      transform: scale(2);
+      z-index: 10;
+      box-shadow: 0 15px 40px rgba(8, 247, 254, 0.3);
+    }
+    
+    .project-content {
+      transform: translateZ(60px) translateY(-10px) rotateX(5deg);
+    }
+    
+    .tags span {
+      transform: translateY(-3px) scale(1.05);
+      box-shadow: 0 5px 15px rgba(255, 46, 99, 0.3);
+    }
+    
+    .project-links a {
+      transform: translateY(-2px) scale(1.05);
+    }
+  }
+
+  @keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  @keyframes imageFloat {
+    0%, 100% { 
+      transform: translateY(0px) rotateZ(0deg); 
+    }
+    50% { 
+      transform: translateY(-3px) rotateZ(0.5deg); 
+    }
+  }
+
+  @keyframes imageBreakout {
+    0% { 
+      transform: translateY(0px) rotateZ(0deg) scale(1);
+      box-shadow: 0 0 0 rgba(8, 247, 254, 0);
+    }
+    50% { 
+      transform: translateY(-15px) rotateZ(2deg) scale(1.1);
+      box-shadow: 0 30px 60px rgba(8, 247, 254, 0.3);
+    }
+    100% { 
+      transform: translateY(0px) rotateZ(0deg) scale(1);
+      box-shadow: 0 0 0 rgba(8, 247, 254, 0);
+    }
+  }
+
+  @keyframes glowPulse {
+    0%, 100% { 
+      box-shadow: 0 0 20px rgba(8, 247, 254, 0.2);
+    }
+    50% { 
+      box-shadow: 0 0 30px rgba(8, 247, 254, 0.4);
+    }
+  }
+
+  @keyframes screenBreak {
+    0%, 100% { 
+      opacity: 0.8;
+      transform: scale(1);
+    }
+    50% { 
+      opacity: 1;
+      transform: scale(1.1);
+    }
   }
 
   .project-image {
     position: relative;
     width: 100%;
     height: 200px;
-    overflow: visible;
+    overflow: hidden;
     transition: transform 0.6s ease;
     z-index: 2;
     border-radius: 15px;
-    background: rgba(255, 255, 255, 0.08); 
-    backdrop-filter: blur(10px);          
-    -webkit-backdrop-filter: blur(10px);  
-    box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.05); 
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.05);
+    transform-style: preserve-3d;
+    backface-visibility: hidden;
     
     img {
       width: 100%;
@@ -69,58 +304,142 @@ const ProjectCard = styled(motion.div)`
       top: 0;
       left: 0;
       z-index: -1;
-      transition: transform 0.6s ease; /* smooth zoom */
+      transition: transform 0.6s ease;
+      filter: brightness(1) contrast(1) saturate(1);
+      transform-style: preserve-3d;
+      backface-visibility: hidden;
+      will-change: transform, filter;
     }
   }
 
-
-
   .project-content {
-    padding: 1.5rem;
+    padding: 2rem;
+    transition: transform 0.4s ease;
+    position: relative;
+    z-index: 5;
 
     h3 {
-      font-size: 1.5rem;
+      font-size: 1.6rem;
       margin-bottom: 1rem;
       color: var(--neon-green);
+      font-family: 'Orbitron', sans-serif;
+      text-shadow: 0 0 10px rgba(46, 255, 163, 0.3);
+      transition: all 0.3s ease;
+      
+      &:hover {
+        transform: translateX(5px);
+        text-shadow: 0 0 15px rgba(46, 255, 163, 0.5);
+      }
     }
 
     p {
-      color: var(--text-secondary);
+      color: rgba(255, 255, 255, 0.8);
       margin-bottom: 1.5rem;
-      line-height: 1.6;
+      line-height: 1.7;
+      font-family: 'Poppins', sans-serif;
+      transition: color 0.3s ease;
     }
 
     .tags {
       display: flex;
-      gap: 0.5rem;
+      gap: 0.8rem;
       flex-wrap: wrap;
-      margin-bottom: 1.5rem;
+      margin-bottom: 2rem;
 
       span {
-        padding: 0.3rem 0.8rem;
-        background: rgba(255, 46, 99, 0.1);
-        border: 1px solid var(--neon-pink);
-        border-radius: 20px;
-        font-size: 0.9rem;
+        padding: 0.5rem 1rem;
+        background: rgba(255, 46, 99, 0.15);
+        border: 1px solid rgba(255, 46, 99, 0.4);
+        border-radius: 25px;
+        font-size: 0.85rem;
         color: var(--neon-pink);
+        font-family: 'Orbitron', sans-serif;
+        font-weight: 500;
+        transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        position: relative;
+        overflow: hidden;
+        
+        &::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: -100%;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(90deg, transparent, rgba(255, 46, 99, 0.3), transparent);
+          transition: left 0.5s ease;
+        }
+        
+        &:hover::before {
+          left: 100%;
+        }
+        
+        &:nth-child(even) {
+          border-color: rgba(8, 247, 254, 0.4);
+          background: rgba(8, 247, 254, 0.15);
+          color: var(--neon-blue);
+          
+          &::before {
+            background: linear-gradient(90deg, transparent, rgba(8, 247, 254, 0.3), transparent);
+          }
+        }
       }
     }
 
     .project-links {
       display: flex;
-      gap: 1rem;
+      gap: 1.2rem;
 
       a {
-        padding: 0.5rem 1rem;
-        border: 1px solid var(--neon-blue);
-        border-radius: 5px;
+        padding: 0.8rem 1.5rem;
+        border: 2px solid var(--neon-blue);
+        border-radius: 8px;
         color: var(--neon-blue);
         text-decoration: none;
-        transition: all 0.3s ease;
+        font-family: 'Orbitron', sans-serif;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        position: relative;
+        overflow: hidden;
+        
+        &::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: var(--neon-blue);
+          transform: scaleX(0);
+          transform-origin: right;
+          transition: transform 0.4s ease;
+          z-index: -1;
+        }
 
         &:hover {
-          background: var(--neon-blue);
           color: var(--dark-bg);
+          box-shadow: 0 8px 25px rgba(8, 247, 254, 0.4);
+          
+          &::before {
+            transform: scaleX(1);
+            transform-origin: left;
+          }
+        }
+        
+        &:nth-child(2) {
+          border-color: var(--neon-purple);
+          color: #ffffff;
+          
+          &::before {
+            background: var(--neon-purple);
+          }
+          
+          &:hover {
+            box-shadow: 0 8px 25px rgba(113, 34, 250, 0.4);
+            color: var(--dark-bg);
+          }
         }
       }
     }
@@ -165,125 +484,273 @@ const projects = [
 
 const Projects = () => {
   const sectionRef = useRef(null);
-  const [animationsTriggered, setAnimationsTriggered] = useState(false);
-  const animationTimelineRef = useRef(null);
+  const [isAnimated, setIsAnimated] = useState(false);
+  const timelineRef = useRef(null);
 
-  // Function to trigger animations
-  const triggerAnimations = () => {
-    if (animationsTriggered || !sectionRef.current) return;
-
-    setAnimationsTriggered(true);
-
-    // Kill existing timeline if it exists
-    if (animationTimelineRef.current) {
-      animationTimelineRef.current.kill();
-    }
-
-    // Create new timeline
-    const tl = gsap.timeline();
-    animationTimelineRef.current = tl;
-
+  // Enhanced animation function with advanced effects
+  const animateProjects = useCallback(() => {
+    if (isAnimated || !sectionRef.current) return;
+    
+    setIsAnimated(true);
+    
     const section = sectionRef.current;
     const title = section.querySelector('h2');
     const cards = section.querySelectorAll('.project-card');
-
-    // Only animate if elements exist
-    if (title && cards.length > 0) {
-      // Set initial states only for elements that exist
-      gsap.set(title, { opacity: 0, y: 100 });
-      gsap.set(cards, { opacity: 0, y: 100 });
-
-      // Animate elements in sequence
-      tl.to(title, {
+    
+    // Kill existing timeline
+    if (timelineRef.current) {
+      timelineRef.current.kill();
+    }
+    
+    // Create master timeline with advanced defaults
+    const masterTL = gsap.timeline({
+      defaults: { ease: 'power2.out' }
+    });
+    timelineRef.current = masterTL;
+    
+    // Create floating elements
+    createFloatingElements();
+    
+    // Set initial states for all elements
+    gsap.set(title, { opacity: 0, y: -50, scale: 0.8, rotationX: 45 });
+    gsap.set(cards, { 
+      opacity: 0, 
+      y: 100, 
+      rotationY: 25, 
+      scale: 0.8,
+      transformOrigin: 'center bottom'
+    });
+    
+    // Enhanced animation sequence
+    masterTL
+      // Title entrance with 3D rotation and scale
+      .to(title, {
         opacity: 1,
         y: 0,
-        duration: 1,
-        ease: 'power3.out'
+        scale: 1,
+        rotationX: 0,
+        duration: 1.2,
+        ease: 'back.out(1.4)',
+        onComplete: () => {
+          title.classList.add('animated');
+        }
       })
-        .to(cards, {
-          opacity: 1,
-          y: 0,
-          stagger: 0.2,
-          duration: 0.8,
-          ease: 'back.out(1.7)'
-        }, '-=0.6');
-    }
-  };
-
-  // Check if user navigated directly to this section
-  useEffect(() => {
-    const checkDirectNavigation = () => {
-      const hash = window.location.hash;
-      if (hash === '#projects') {
-        // Add a longer delay for direct navigation to ensure DOM is ready
-        setTimeout(() => {
-          triggerAnimations();
-        }, 300);
-      }
-    };
-
-    checkDirectNavigation();
-    window.addEventListener('hashchange', checkDirectNavigation);
-
-    return () => {
-      window.removeEventListener('hashchange', checkDirectNavigation);
-    };
-  }, []);
-
-  // Listen for custom navigation events
-  useEffect(() => {
-    const handleNavigationToProjects = () => {
-      setTimeout(() => {
-        triggerAnimations();
-      }, 400); // Increased delay for better reliability
-    };
-
-    window.addEventListener('navigateToProjects', handleNavigationToProjects);
-
-    return () => {
-      window.removeEventListener('navigateToProjects', handleNavigationToProjects);
-    };
-  }, []);
-
-  // Ensure content is visible by default
-  useEffect(() => {
-    if (sectionRef.current && !animationsTriggered) {
-      // Make sure content is visible by default
-      const section = sectionRef.current;
-      const title = section.querySelector('h2');
-      const cards = section.querySelectorAll('.project-card');
-
-      if (title && cards.length > 0) {
-        gsap.set(title, { opacity: 1, y: 0 });
-        gsap.set(cards, { opacity: 1, y: 0 });
-      }
-    }
-  }, [animationsTriggered]);
-
-  useEffect(() => {
-    // ScrollTrigger-based animations (fallback)
-    if (!animationsTriggered && sectionRef.current) {
-      const section = sectionRef.current;
-
-      // Create ScrollTrigger only if not already animated
-      const scrollTriggerAnimation = ScrollTrigger.create({
-        trigger: section,
-        start: 'top center+=100',
-        onEnter: () => {
-          if (!animationsTriggered) {
-            triggerAnimations();
-          }
+      // Cards with staggered 3D entrance
+      .to(cards, {
+        opacity: 1,
+        y: 0,
+        rotationY: 0,
+        scale: 1,
+        duration: 0.8,
+        stagger: {
+          amount: 0.6,
+          from: 'start',
+          ease: 'power2.out'
         },
-        once: true
+        ease: 'back.out(1.2)'
+      }, '-=0.6')
+      // Add magnetic hover effects after animation
+      .call(() => {
+        addMagneticEffects();
+        addParallaxEffects();
       });
 
-      return () => {
-        if (scrollTriggerAnimation) {
-          scrollTriggerAnimation.kill();
-        }
-      };
+    return masterTL;
+  }, [isAnimated]);
+
+  // Create floating background elements
+  const createFloatingElements = useCallback(() => {
+    if (!sectionRef.current) return;
+
+    const section = sectionRef.current;
+    let floatingContainer = section.querySelector('.floating-elements');
+    
+    if (!floatingContainer) {
+      floatingContainer = document.createElement('div');
+      floatingContainer.className = 'floating-elements';
+      section.appendChild(floatingContainer);
+      
+      // Create floating shapes
+      for (let i = 0; i < 3; i++) {
+        const shape = document.createElement('div');
+        shape.className = 'floating-shape';
+        floatingContainer.appendChild(shape);
+      }
     }
-  }, [animationsTriggered]);
+
+    // Create particles
+    for (let i = 0; i < 20; i++) {
+      const particle = document.createElement('div');
+      particle.className = 'particle';
+      particle.style.cssText = `
+        position: absolute;
+        width: 3px;
+        height: 3px;
+        background: var(--neon-blue);
+        border-radius: 50%;
+        opacity: 0;
+        box-shadow: 0 0 4px var(--neon-blue);
+      `;
+      floatingContainer.appendChild(particle);
+
+      // Random positioning and animation
+      gsap.set(particle, {
+        x: Math.random() * window.innerWidth,
+        y: Math.random() * window.innerHeight,
+      });
+
+      gsap.to(particle, {
+        opacity: Math.random() * 0.6 + 0.2,
+        duration: Math.random() * 3 + 2,
+        ease: 'power2.out'
+      });
+
+      gsap.to(particle, {
+        x: `+=${Math.random() * 300 - 150}`,
+        y: `+=${Math.random() * 300 - 150}`,
+        duration: Math.random() * 15 + 10,
+        ease: 'power1.inOut',
+        repeat: -1,
+        yoyo: true,
+        delay: Math.random() * 5
+      });
+    }
+  }, []);
+
+  // Add magnetic hover effects to cards
+  const addMagneticEffects = useCallback(() => {
+    if (!sectionRef.current) return;
+
+    const cards = sectionRef.current.querySelectorAll('.project-card');
+    
+    cards.forEach(card => {
+      const handleMouseMove = (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left - rect.width / 2;
+        const y = e.clientY - rect.top - rect.height / 2;
+        
+        gsap.to(card, {
+          rotationY: x * 0.05,
+          rotationX: -y * 0.05,
+          duration: 0.3,
+          ease: 'power2.out'
+        });
+      };
+
+      const handleMouseLeave = () => {
+        gsap.to(card, {
+          rotationY: 0,
+          rotationX: 0,
+          duration: 0.5,
+          ease: 'back.out(1.7)'
+        });
+      };
+
+      card.addEventListener('mousemove', handleMouseMove);
+      card.addEventListener('mouseleave', handleMouseLeave);
+    });
+  }, []);
+
+  // Add parallax effects to images
+  const addParallaxEffects = useCallback(() => {
+    if (!sectionRef.current) return;
+
+    const images = sectionRef.current.querySelectorAll('.project-image img');
+    
+    images.forEach(img => {
+      const card = img.closest('.project-card');
+      
+      const handleMouseMove = (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = (e.clientX - rect.left - rect.width / 2) * 0.02;
+        const y = (e.clientY - rect.top - rect.height / 2) * 0.02;
+        
+        gsap.to(img, {
+          x: x,
+          y: y,
+          duration: 0.3,
+          ease: 'power2.out'
+        });
+      };
+
+      const handleMouseLeave = () => {
+        gsap.to(img, {
+          x: 0,
+          y: 0,
+          duration: 0.5,
+          ease: 'back.out(1.7)'
+        });
+      };
+
+      card.addEventListener('mousemove', handleMouseMove);
+      card.addEventListener('mouseleave', handleMouseLeave);
+    });
+  }, []);
+
+  // Unified effect for all triggers - optimized and performant
+  useEffect(() => {
+    if (isAnimated || !sectionRef.current) return;
+
+    const section = sectionRef.current;
+    let scrollTrigger = null;
+
+    // Check for direct navigation first
+    const checkDirectNavigation = () => {
+      if (window.location.hash === '#projects') {
+        setTimeout(animateProjects, 300);
+        return true;
+      }
+      return false;
+    };
+
+    // Setup scroll trigger if not direct navigation
+    if (!checkDirectNavigation()) {
+      const ctx = gsap.context(() => {
+        scrollTrigger = ScrollTrigger.create({
+          trigger: section,
+          start: 'top center+=100',
+          once: true,
+          onEnter: animateProjects,
+          invalidateOnRefresh: true,
+          refreshPriority: 1
+        });
+      });
+
+      scrollTrigger.context = ctx;
+    }
+
+    // Event handlers
+    const handleHashChange = () => {
+      if (window.location.hash === '#projects' && !isAnimated) {
+        setTimeout(animateProjects, 200);
+      }
+    };
+
+    const handleCustomNavigation = () => {
+      if (!isAnimated) {
+        setTimeout(animateProjects, 150);
+      }
+    };
+
+    // Add event listeners
+    window.addEventListener('hashchange', handleHashChange);
+    window.addEventListener('navigateToProjects', handleCustomNavigation);
+
+    // Cleanup function
+    return () => {
+      if (scrollTrigger) {
+        scrollTrigger.kill();
+        if (scrollTrigger.context) {
+          scrollTrigger.context.revert();
+        }
+      }
+      if (timelineRef.current) {
+        timelineRef.current.kill();
+      }
+      window.removeEventListener('hashchange', handleHashChange);
+      window.removeEventListener('navigateToProjects', handleCustomNavigation);
+    };
+  }, [isAnimated, animateProjects]);
 
   return (
     <StyledProjects ref={sectionRef} id="projects">
