@@ -1,8 +1,30 @@
 {
+  "$schema": "https://openapi.vercel.sh/vercel.json",
   "redirects": [
     {
-      "source": "http://vishwafernando.me",
-      "destination": "https://vishwafernando.me",
+      "source": "/(.*)",
+      "destination": "https://vishwafernando.me/:1",
+      "has": [
+        {
+          "type": "host",
+          "value": "vishwafernando.me"
+        },
+        {
+          "type": "protocol",
+          "value": "http"
+        }
+      ],
+      "permanent": true
+    },
+    {
+      "source": "/(.*)",
+      "destination": "https://vishwafernando.me/:1",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.vishwafernando.me"
+        }
+      ],
       "permanent": true
     }
   ]
