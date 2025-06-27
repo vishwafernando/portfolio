@@ -29,57 +29,6 @@ const StyledProjects = styled.section`
     z-index: 1;
   }
 
-  .floating-elements {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: 2;
-  }
-
-  .floating-shape {
-    position: absolute;
-    opacity: 0.1;
-    border-radius: 50%;
-    background: linear-gradient(45deg, var(--neon-blue), var(--neon-purple));
-    animation: floatAround 20s ease-in-out infinite;
-  }
-
-  .floating-shape:nth-child(1) {
-    width: 100px;
-    height: 100px;
-    top: 10%;
-    left: 10%;
-    animation-delay: 0s;
-  }
-
-  .floating-shape:nth-child(2) {
-    width: 60px;
-    height: 60px;
-    top: 70%;
-    right: 20%;
-    animation-delay: -7s;
-    background: linear-gradient(45deg, var(--neon-pink), var(--neon-green));
-  }
-
-  .floating-shape:nth-child(3) {
-    width: 80px;
-    height: 80px;
-    bottom: 20%;
-    left: 80%;
-    animation-delay: -14s;
-    background: linear-gradient(45deg, var(--neon-purple), var(--neon-blue));
-  }
-
-  @keyframes floatAround {
-    0%, 100% { transform: translate(0, 0) rotate(0deg); }
-    25% { transform: translate(30px, -40px) rotate(90deg); }
-    50% { transform: translate(-20px, -80px) rotate(180deg); }
-    75% { transform: translate(-50px, -20px) rotate(270deg); }
-  }
-
   h2 {
     font-size: clamp(2.5rem, 6vw, 3.5rem);
     text-align: center;
@@ -134,8 +83,15 @@ const StyledProjects = styled.section`
     
     @media (max-width: 768px) {
       grid-template-columns: 1fr;
-      gap: 3rem;
+      gap: 2rem;
       padding: 0 1rem;
+      perspective: none;
+      transform-style: flat;
+    }
+    
+    @media (max-width: 480px) {
+      gap: 1.5rem;
+      padding: 0 0.5rem;
     }
   }
 `;
@@ -153,6 +109,19 @@ const ProjectCard = styled(motion.div)`
   will-change: transform;
   backface-visibility: hidden;
   animation: glowPulse 4s ease-in-out infinite;
+  
+  @media (max-width: 768px) {
+    perspective: none;
+    transform-style: flat;
+    animation: none;
+    transition: all 0.3s ease;
+  }
+  
+  @media (max-width: 480px) {
+    border-radius: 15px;
+    margin: 0 auto;
+    max-width: 100%;
+  }
   
   &::before {
     content: '';
@@ -228,6 +197,64 @@ const ProjectCard = styled(motion.div)`
     .project-links a {
       transform: translateY(-2px) scale(1.05);
     }
+    
+    @media (max-width: 768px) {
+      transform: translateY(-10px) scale(1.02);
+      box-shadow: 
+        0 20px 40px rgba(0, 0, 0, 0.3),
+        0 10px 20px rgba(8, 247, 254, 0.3);
+      
+      .project-image {
+        transform: scale(1.05);
+        box-shadow: 0 8px 20px rgba(8, 247, 254, 0.2);
+      }
+      
+      .project-content {
+        transform: translateY(-5px);
+      }
+      
+      .tags span {
+        transform: scale(1.02);
+        box-shadow: 0 2px 8px rgba(255, 46, 99, 0.2);
+      }
+      
+      .project-links a {
+        transform: translateY(-1px) scale(1.02);
+      }
+    }
+    
+    @media (max-width: 480px) {
+      transform: translateY(-5px) scale(1.01);
+      box-shadow: 
+        0 10px 20px rgba(0, 0, 0, 0.2),
+        0 5px 10px rgba(8, 247, 254, 0.2);
+      
+      .project-image {
+        transform: scale(1.02);
+        box-shadow: 0 4px 12px rgba(8, 247, 254, 0.15);
+      }
+      
+      .project-content {
+        transform: none;
+      }
+      
+      .tags span, .project-links a {
+        transform: none;
+        box-shadow: none;
+      }
+    }
+  }
+  
+  /* Mobile touch states */
+  @media (max-width: 768px) {
+    &:active {
+      transform: translateY(-5px) scale(1.01);
+      transition: all 0.1s ease;
+      
+      .project-image {
+        transform: scale(1.02);
+      }
+    }
   }
 
   @keyframes gradientShift {
@@ -295,6 +322,21 @@ const ProjectCard = styled(motion.div)`
     transform-style: preserve-3d;
     backface-visibility: hidden;
     
+    @media (max-width: 768px) {
+      height: 180px;
+      transform-style: flat;
+      transition: transform 0.3s ease;
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
+    }
+    
+    @media (max-width: 480px) {
+      height: 160px;
+      border-radius: 12px;
+      transition: transform 0.2s ease;
+      background: rgba(255, 255, 255, 0.05);
+    }
+    
     img {
       width: 100%;
       height: 100%;
@@ -309,6 +351,19 @@ const ProjectCard = styled(motion.div)`
       transform-style: preserve-3d;
       backface-visibility: hidden;
       will-change: transform, filter;
+      
+      @media (max-width: 768px) {
+        transition: transform 0.3s ease;
+        transform-style: flat;
+        will-change: auto;
+        filter: brightness(0.95) contrast(1.05);
+      }
+      
+      @media (max-width: 480px) {
+        border-radius: 12px;
+        transition: transform 0.2s ease;
+        filter: brightness(0.9) contrast(1.1);
+      }
     }
   }
 
@@ -317,6 +372,15 @@ const ProjectCard = styled(motion.div)`
     transition: transform 0.4s ease;
     position: relative;
     z-index: 5;
+    
+    @media (max-width: 768px) {
+      padding: 1.5rem;
+      transition: transform 0.2s ease;
+    }
+    
+    @media (max-width: 480px) {
+      padding: 1rem;
+    }
 
     h3 {
       font-size: 1.6rem;
@@ -326,9 +390,29 @@ const ProjectCard = styled(motion.div)`
       text-shadow: 0 0 10px rgba(46, 255, 163, 0.3);
       transition: all 0.3s ease;
       
+      @media (max-width: 768px) {
+        font-size: 1.4rem;
+        margin-bottom: 0.8rem;
+      }
+      
+      @media (max-width: 480px) {
+        font-size: 1.2rem;
+        margin-bottom: 0.6rem;
+        text-shadow: 0 0 5px rgba(46, 255, 163, 0.2);
+      }
+      
       &:hover {
         transform: translateX(5px);
         text-shadow: 0 0 15px rgba(46, 255, 163, 0.5);
+        
+        @media (max-width: 768px) {
+          transform: translateX(2px);
+          text-shadow: 0 0 8px rgba(46, 255, 163, 0.3);
+        }
+        
+        @media (max-width: 480px) {
+          transform: none;
+        }
       }
     }
 
@@ -338,6 +422,18 @@ const ProjectCard = styled(motion.div)`
       line-height: 1.7;
       font-family: 'Poppins', sans-serif;
       transition: color 0.3s ease;
+      
+      @media (max-width: 768px) {
+        margin-bottom: 1.2rem;
+        line-height: 1.6;
+        font-size: 0.95rem;
+      }
+      
+      @media (max-width: 480px) {
+        margin-bottom: 1rem;
+        line-height: 1.5;
+        font-size: 0.9rem;
+      }
     }
 
     .tags {
@@ -345,6 +441,16 @@ const ProjectCard = styled(motion.div)`
       gap: 0.8rem;
       flex-wrap: wrap;
       margin-bottom: 2rem;
+      
+      @media (max-width: 768px) {
+        gap: 0.6rem;
+        margin-bottom: 1.5rem;
+      }
+      
+      @media (max-width: 480px) {
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+      }
 
       span {
         padding: 0.5rem 1rem;
@@ -359,6 +465,18 @@ const ProjectCard = styled(motion.div)`
         position: relative;
         overflow: hidden;
         
+        @media (max-width: 768px) {
+          padding: 0.4rem 0.8rem;
+          font-size: 0.8rem;
+          transition: all 0.2s ease;
+        }
+        
+        @media (max-width: 480px) {
+          padding: 0.3rem 0.6rem;
+          font-size: 0.75rem;
+          border-radius: 20px;
+        }
+        
         &::before {
           content: '';
           position: absolute;
@@ -368,10 +486,18 @@ const ProjectCard = styled(motion.div)`
           height: 100%;
           background: linear-gradient(90deg, transparent, rgba(255, 46, 99, 0.3), transparent);
           transition: left 0.5s ease;
+          
+          @media (max-width: 768px) {
+            transition: left 0.3s ease;
+          }
         }
         
         &:hover::before {
           left: 100%;
+          
+          @media (max-width: 480px) {
+            left: 0;
+          }
         }
         
         &:nth-child(even) {
@@ -389,6 +515,15 @@ const ProjectCard = styled(motion.div)`
     .project-links {
       display: flex;
       gap: 1.2rem;
+      
+      @media (max-width: 768px) {
+        gap: 1rem;
+        flex-direction: column;
+      }
+      
+      @media (max-width: 480px) {
+        gap: 0.8rem;
+      }
 
       a {
         padding: 0.8rem 1.5rem;
@@ -403,6 +538,20 @@ const ProjectCard = styled(motion.div)`
         transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         position: relative;
         overflow: hidden;
+        text-align: center;
+        
+        @media (max-width: 768px) {
+          padding: 0.7rem 1.2rem;
+          font-size: 0.9rem;
+          transition: all 0.2s ease;
+          width: 100%;
+        }
+        
+        @media (max-width: 480px) {
+          padding: 0.6rem 1rem;
+          font-size: 0.85rem;
+          letter-spacing: 0.5px;
+        }
         
         &::before {
           content: '';
@@ -416,11 +565,23 @@ const ProjectCard = styled(motion.div)`
           transform-origin: right;
           transition: transform 0.4s ease;
           z-index: -1;
+          
+          @media (max-width: 768px) {
+            transition: transform 0.2s ease;
+          }
         }
 
         &:hover {
           color: var(--dark-bg);
           box-shadow: 0 8px 25px rgba(8, 247, 254, 0.4);
+          
+          @media (max-width: 768px) {
+            box-shadow: 0 4px 15px rgba(8, 247, 254, 0.3);
+          }
+          
+          @media (max-width: 480px) {
+            box-shadow: 0 2px 10px rgba(8, 247, 254, 0.2);
+          }
           
           &::before {
             transform: scaleX(1);
@@ -439,6 +600,14 @@ const ProjectCard = styled(motion.div)`
           &:hover {
             box-shadow: 0 8px 25px rgba(113, 34, 250, 0.4);
             color: var(--dark-bg);
+            
+            @media (max-width: 768px) {
+              box-shadow: 0 4px 15px rgba(113, 34, 250, 0.3);
+            }
+            
+            @media (max-width: 480px) {
+              box-shadow: 0 2px 10px rgba(113, 34, 250, 0.2);
+            }
           }
         }
       }
@@ -508,9 +677,6 @@ const Projects = () => {
     });
     timelineRef.current = masterTL;
     
-    // Create floating elements
-    createFloatingElements();
-    
     // Set initial states for all elements
     gsap.set(title, { opacity: 0, y: -50, scale: 0.8, rotationX: 45 });
     gsap.set(cards, { 
@@ -557,65 +723,6 @@ const Projects = () => {
 
     return masterTL;
   }, [isAnimated]);
-
-  // Create floating background elements
-  const createFloatingElements = useCallback(() => {
-    if (!sectionRef.current) return;
-
-    const section = sectionRef.current;
-    let floatingContainer = section.querySelector('.floating-elements');
-    
-    if (!floatingContainer) {
-      floatingContainer = document.createElement('div');
-      floatingContainer.className = 'floating-elements';
-      section.appendChild(floatingContainer);
-      
-      // Create floating shapes
-      for (let i = 0; i < 3; i++) {
-        const shape = document.createElement('div');
-        shape.className = 'floating-shape';
-        floatingContainer.appendChild(shape);
-      }
-    }
-
-    // Create particles
-    for (let i = 0; i < 20; i++) {
-      const particle = document.createElement('div');
-      particle.className = 'particle';
-      particle.style.cssText = `
-        position: absolute;
-        width: 3px;
-        height: 3px;
-        background: var(--neon-blue);
-        border-radius: 50%;
-        opacity: 0;
-        box-shadow: 0 0 4px var(--neon-blue);
-      `;
-      floatingContainer.appendChild(particle);
-
-      // Random positioning and animation
-      gsap.set(particle, {
-        x: Math.random() * window.innerWidth,
-        y: Math.random() * window.innerHeight,
-      });
-
-      gsap.to(particle, {
-        opacity: Math.random() * 0.6 + 0.2,
-        duration: Math.random() * 3 + 2,
-        ease: 'power2.out'
-      });
-
-      gsap.to(particle, {
-        x: `+=${Math.random() * 300 - 150}`,
-        y: `+=${Math.random() * 300 - 150}`,
-        duration: Math.random() * 15 + 10,
-        ease: 'power1.inOut',
-        repeat: -1,
-        yoyo: true,
-        delay: Math.random() * 5
-      });
-    }
-  }, []);
 
   // Add magnetic hover effects to cards
   const addMagneticEffects = useCallback(() => {
