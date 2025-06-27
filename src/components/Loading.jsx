@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, memo } from 'react';
 import styled, { keyframes } from 'styled-components';
 
 const fadeOut = keyframes`
@@ -183,19 +183,19 @@ const Loading = ({ onLoadComplete }) => {
       textIndex = (textIndex + 1) % loadingTexts.length;
     }, 600);
 
-    // Simulate realistic loading progress
+    // Simulate realistic loading progress with more efficient updates
+    let currentProgress = 0;
     const progressInterval = setInterval(() => {
-      setProgress(prev => {
-        if (prev >= 100) {
-          clearInterval(progressInterval);
-          return 100;
-        }
-        // Simulate variable loading speeds
-        const increment = Math.random() * 15 + 5;
-        return Math.min(prev + increment, 100);
-      });
+      currentProgress += Math.random() * 15 + 5;
+      if (currentProgress >= 100) {
+        setProgress(100);
+        clearInterval(progressInterval);
+      } else {
+        setProgress(Math.min(currentProgress, 100));
+      }
     }, 200);
 
+    // Minimum loading time for smooth UX
     const minLoadTime = setTimeout(() => {
       setProgress(100);
       setTimeout(() => {
@@ -233,4 +233,4 @@ const Loading = ({ onLoadComplete }) => {
   );
 };
 
-export default Loading;
+export default memo(Loading);

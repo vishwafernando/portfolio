@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useRef, useState, useCallback, useMemo, memo } from 'react';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import { gsap } from 'gsap';
@@ -180,7 +180,7 @@ const ProjectCard = styled(motion.div)`
     }
     
     .project-image {
-      transform: scale(2);
+      transform: scale(1.7);
       z-index: 10;
       box-shadow: 0 15px 40px rgba(8, 247, 254, 0.3);
     }
@@ -615,7 +615,8 @@ const ProjectCard = styled(motion.div)`
   }
 `;
 
-const projects = [
+// Memoized projects data - moved outside component to prevent re-creation
+const projectsData = [
   {
     title: 'Cocktails Website',
     description: 'Interactive website about cocktails with animations and framer motion using Gsap and react.',
@@ -714,12 +715,7 @@ const Projects = () => {
           ease: 'power2.out'
         },
         ease: 'back.out(1.2)'
-      }, '-=0.6')
-      // Add magnetic hover effects after animation
-      .call(() => {
-        addMagneticEffects();
-        addParallaxEffects();
-      });
+      }, '-=0.6');
 
     return masterTL;
   }, [isAnimated]);
@@ -729,6 +725,7 @@ const Projects = () => {
     if (!sectionRef.current) return;
 
     const cards = sectionRef.current.querySelectorAll('.project-card');
+    const eventListeners = [];
     
     cards.forEach(card => {
       const handleMouseMove = (e) => {
@@ -755,7 +752,25 @@ const Projects = () => {
 
       card.addEventListener('mousemove', handleMouseMove);
       card.addEventListener('mouseleave', handleMouseLeave);
+      
+      // Store listeners for cleanup
+      eventListeners.push({
+        element: card,
+        type: 'mousemove',
+        handler: handleMouseMove
+      }, {
+        element: card,
+        type: 'mouseleave',
+        handler: handleMouseLeave
+      });
     });
+    
+    // Return cleanup function
+    return () => {
+      eventListeners.forEach(({ element, type, handler }) => {
+        element.removeEventListener(type, handler);
+      });
+    };
   }, []);
 
   // Add parallax effects to images
@@ -763,6 +778,7 @@ const Projects = () => {
     if (!sectionRef.current) return;
 
     const images = sectionRef.current.querySelectorAll('.project-image img');
+    const eventListeners = [];
     
     images.forEach(img => {
       const card = img.closest('.project-card');
@@ -791,7 +807,25 @@ const Projects = () => {
 
       card.addEventListener('mousemove', handleMouseMove);
       card.addEventListener('mouseleave', handleMouseLeave);
+      
+      // Store listeners for cleanup
+      eventListeners.push({
+        element: card,
+        type: 'mousemove',
+        handler: handleMouseMove
+      }, {
+        element: card,
+        type: 'mouseleave',
+        handler: handleMouseLeave
+      });
     });
+    
+    // Return cleanup function
+    return () => {
+      eventListeners.forEach(({ element, type, handler }) => {
+        element.removeEventListener(type, handler);
+      });
+    };
   }, []);
 
   // Unified effect for all triggers - optimized and performant
@@ -800,11 +834,18 @@ const Projects = () => {
 
     const section = sectionRef.current;
     let scrollTrigger = null;
+    let magneticCleanup = null;
+    let parallaxCleanup = null;
 
     // Check for direct navigation first
     const checkDirectNavigation = () => {
       if (window.location.hash === '#projects') {
-        setTimeout(animateProjects, 300);
+        setTimeout(() => {
+          animateProjects();
+          // Set up interactive effects after animation
+          magneticCleanup = addMagneticEffects();
+          parallaxCleanup = addParallaxEffects();
+        }, 300);
         return true;
       }
       return false;
@@ -817,7 +858,12 @@ const Projects = () => {
           trigger: section,
           start: 'top center+=100',
           once: true,
-          onEnter: animateProjects,
+          onEnter: () => {
+            animateProjects();
+            // Set up interactive effects after animation
+            magneticCleanup = addMagneticEffects();
+            parallaxCleanup = addParallaxEffects();
+          },
           invalidateOnRefresh: true,
           refreshPriority: 1
         });
@@ -829,13 +875,23 @@ const Projects = () => {
     // Event handlers
     const handleHashChange = () => {
       if (window.location.hash === '#projects' && !isAnimated) {
-        setTimeout(animateProjects, 200);
+        setTimeout(() => {
+          animateProjects();
+          // Set up interactive effects after animation
+          magneticCleanup = addMagneticEffects();
+          parallaxCleanup = addParallaxEffects();
+        }, 200);
       }
     };
 
     const handleCustomNavigation = () => {
       if (!isAnimated) {
-        setTimeout(animateProjects, 150);
+        setTimeout(() => {
+          animateProjects();
+          // Set up interactive effects after animation
+          magneticCleanup = addMagneticEffects();
+          parallaxCleanup = addParallaxEffects();
+        }, 150);
       }
     };
 
@@ -854,49 +910,66 @@ const Projects = () => {
       if (timelineRef.current) {
         timelineRef.current.kill();
       }
+      if (magneticCleanup) {
+        magneticCleanup();
+      }
+      if (parallaxCleanup) {
+        parallaxCleanup();
+      }
       window.removeEventListener('hashchange', handleHashChange);
       window.removeEventListener('navigateToProjects', handleCustomNavigation);
     };
-  }, [isAnimated, animateProjects]);
+  }, [isAnimated, animateProjects, addMagneticEffects, addParallaxEffects]);
+
+  // Memoize projects rendering to prevent unnecessary re-renders
+  const memoizedProjects = useMemo(() => 
+    projectsData.map((project, index) => (
+      <ProjectCard
+        key={`${project.title}-${index}`} // More stable key
+        className="project-card"
+        bgColor={project.bgColor}
+        whileHover={{ y: -10 }}
+      >
+        <div className="project-image">
+          {project.image && (
+            <img 
+              src={project.image} 
+              alt={project.title}
+              loading="lazy" // Add lazy loading for performance
+            />
+          )}
+        </div>
+        <div className="project-content">
+          <h3>{project.title}</h3>
+          <p>{project.description}</p>
+          <div className="tags">
+            {project.tags.map((tag, i) => (
+              <span key={`${tag}-${i}`}>{tag}</span>
+            ))}
+          </div>
+          <div className="project-links">
+            <a href={project.links.live} target="_blank" rel="noopener noreferrer">
+              Live Demo
+            </a>
+            <a href={project.links.code} target="_blank" rel="noopener noreferrer">
+              View Code
+            </a>
+          </div>
+        </div>
+      </ProjectCard>
+    )), 
+    [] // Empty dependency array since projectsData is static
+  );
 
   return (
     <StyledProjects ref={sectionRef} id="projects">
       <h2>Featured Projects</h2>
       <div className="projects-grid">
-        {projects.map((project, index) => (
-          <ProjectCard
-            key={index}
-            className="project-card"
-            bgColor={project.bgColor}
-            whileHover={{ y: -10 }}
-          >
-            <div className="project-image">
-              {project.image && (
-                <img src={project.image} alt={project.title} />
-              )}
-            </div>
-            <div className="project-content">
-              <h3>{project.title}</h3>
-              <p>{project.description}</p>
-              <div className="tags">
-                {project.tags.map((tag, i) => (
-                  <span key={i}>{tag}</span>
-                ))}
-              </div>
-              <div className="project-links">
-                <a href={project.links.live} target="_blank" rel="noopener noreferrer">
-                  Live Demo
-                </a>
-                <a href={project.links.code} target="_blank" rel="noopener noreferrer">
-                  View Code
-                </a>
-              </div>
-            </div>
-          </ProjectCard>
-        ))}
+        {memoizedProjects}
       </div>
     </StyledProjects>
   );
 };
 
-export default Projects;
+// Memoize the component to prevent unnecessary re-renders
+export default memo(Projects);

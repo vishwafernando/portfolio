@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo, useCallback, useMemo } from 'react';
 import styled from 'styled-components';
 
 const StyledFooter = styled.footer`
@@ -274,22 +274,33 @@ const Footer = () => {
     const [showScrollTop, setShowScrollTop] = React.useState(false);
 
     React.useEffect(() => {
+        // Throttled scroll handler for better performance
+        let ticking = false;
         const handleScroll = () => {
-            setShowScrollTop(window.scrollY > 300);
+            if (!ticking) {
+                requestAnimationFrame(() => {
+                    setShowScrollTop(prev => {
+                        const shouldShow = window.scrollY > 300;
+                        return prev !== shouldShow ? shouldShow : prev;
+                    });
+                    ticking = false;
+                });
+                ticking = true;
+            }
         };
 
-        window.addEventListener('scroll', handleScroll);
+        window.addEventListener('scroll', handleScroll, { passive: true });
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
-    const scrollToTop = () => {
+    const scrollToTop = useCallback(() => {
         window.scrollTo({
             top: 0,
             behavior: 'smooth'
         });
-    };
+    }, []);
 
-    const scrollToSection = (sectionId) => {
+    const scrollToSection = useCallback((sectionId) => {
         const element = document.getElementById(sectionId);
         if (element) {
             element.scrollIntoView({
@@ -297,7 +308,37 @@ const Footer = () => {
                 block: 'start'
             });
         }
-    };
+    }, []);
+
+    // Memoize social links to prevent recreation
+    const socialLinks = useMemo(() => [
+        {
+            href: "https://github.com/vishwafernando",
+            label: "GitHub",
+            icon: "https://img.icons8.com/external-tal-revivo-bold-tal-revivo/24/external-github-with-cat-logo-an-online-community-for-software-development-logo-bold-tal-revivo.png",
+            alt: "Github"
+        },
+        {
+            href: "https://www.linkedin.com/in/vishwafernando",
+            label: "LinkedIn",
+            icon: "https://img.icons8.com/ios-filled/50/linkedin.png",
+            alt: "linkedin"
+        },
+        {
+            href: "#",
+            label: "Email",
+            icon: "https://img.icons8.com/ios-filled/50/blogger.png",
+            alt: "Blogger"
+        }
+    ], []);
+
+    // Memoize quick links
+    const quickLinks = useMemo(() => [
+        { id: 'home', label: 'Home' },
+        { id: 'about', label: 'About' },
+        { id: 'projects', label: 'Projects' },
+        { id: 'contact', label: 'Contact' }
+    ], []);
 
     return (
         <StyledFooter>
@@ -314,58 +355,31 @@ const Footer = () => {
                             Follow me on.
                         </p>
                         <div className="social-links">
-                            <a
-                                href="https://github.com/vishwafernando"
-                                className="social-link"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                aria-label="GitHub"
-                            >
-                                <img width="24" height="24" src="https://img.icons8.com/external-tal-revivo-bold-tal-revivo/24/external-github-with-cat-logo-an-online-community-for-software-development-logo-bold-tal-revivo.png" alt="Github" />
-                            </a>
-                            <a
-                                href="https://www.linkedin.com/in/vishwafernando"
-                                className="social-link"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                aria-label="LinkedIn"
-                            >
-                                <img width="24" height="24" src="https://img.icons8.com/ios-filled/50/linkedin.png" alt="linkedin" />
-                            </a>
-                            <a
-                                className="social-link"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                aria-label="Email"
-                            >
-                                <img width="24" height="24" src="https://img.icons8.com/ios-filled/50/blogger.png" alt="Blogger" />
-                            </a>
+                            {socialLinks.map((link, index) => (
+                                <a
+                                    key={index}
+                                    href={link.href}
+                                    className="social-link"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    aria-label={link.label}
+                                >
+                                    <img width="24" height="24" src={link.icon} alt={link.alt} />
+                                </a>
+                            ))}
                         </div>
                     </div>
 
                     <div className="footer-section">
                         <h3>Quick Links</h3>
                         <ul className="quick-links">
-                            <li>
-                                <a href="#home" onClick={(e) => { e.preventDefault(); scrollToSection('home'); }}>
-                                    Home
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#about" onClick={(e) => { e.preventDefault(); scrollToSection('about'); }}>
-                                    About
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#projects" onClick={(e) => { e.preventDefault(); scrollToSection('projects'); }}>
-                                    Projects
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#contact" onClick={(e) => { e.preventDefault(); scrollToSection('contact'); }}>
-                                    Contact
-                                </a>
-                            </li>
+                            {quickLinks.map(({ id, label }) => (
+                                <li key={id}>
+                                    <a href={`#${id}`} onClick={(e) => { e.preventDefault(); scrollToSection(id); }}>
+                                        {label}
+                                    </a>
+                                </li>
+                            ))}
                         </ul>
                     </div>
 
@@ -417,4 +431,4 @@ const Footer = () => {
     );
 };
 
-export default Footer;
+export default memo(Footer);

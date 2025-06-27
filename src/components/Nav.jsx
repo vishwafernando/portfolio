@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback, useMemo, memo } from 'react';
 import styled from 'styled-components';
 import { gsap } from 'gsap';
 
@@ -192,12 +192,42 @@ const Nav = () => {
   const [activeSection, setActiveSection] = useState('home');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const sections = [
+  // Memoize sections data to prevent recreation
+  const sections = useMemo(() => [
     { id: 'home', label: 'HOME' },
     { id: 'about', label: 'ABOUT' },
     { id: 'projects', label: 'PROJECTS' },
     { id: 'contact', label: 'CONTACT' }
-  ];
+  ], []);
+
+  // More efficient scroll handler with throttling
+  const handleScroll = useCallback(() => {
+    const scrollPosition = window.scrollY;
+    
+    // Special case for when at the very top - always show home as active
+    if (scrollPosition < 50) {
+      setActiveSection(prev => prev !== 'home' ? 'home' : prev);
+      return;
+    }
+    
+    // Use center of viewport to determine which section is active
+    const viewportCenter = scrollPosition + window.innerHeight / 2;
+    
+    // Find the section that contains the center of the viewport
+    let currentSection = 'home';
+    
+    sections.forEach(({ id }) => {
+      const element = document.getElementById(id);
+      if (element) {
+        const { offsetTop, offsetHeight } = element;
+        if (viewportCenter >= offsetTop && viewportCenter < offsetTop + offsetHeight) {
+          currentSection = id;
+        }
+      }
+    });
+    
+    setActiveSection(prev => prev !== currentSection ? currentSection : prev);
+  }, [sections]);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -213,42 +243,26 @@ const Nav = () => {
       );
     });
 
-    const handleScroll = () => {
-      const scrollPosition = window.scrollY;
-      
-      // Special case for when at the very top - always show home as active
-      if (scrollPosition < 50) {
-        setActiveSection('home');
-        return;
+    // Throttle scroll events for better performance
+    let ticking = false;
+    const onScroll = () => {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          handleScroll();
+          ticking = false;
+        });
+        ticking = true;
       }
-      
-      // Use center of viewport to determine which section is active
-      const viewportCenter = scrollPosition + window.innerHeight / 2;
-      
-      // Find the section that contains the center of the viewport
-      let currentSection = 'home';
-      
-      sections.forEach(({ id }) => {
-        const element = document.getElementById(id);
-        if (element) {
-          const { offsetTop, offsetHeight } = element;
-          if (viewportCenter >= offsetTop && viewportCenter < offsetTop + offsetHeight) {
-            currentSection = id;
-          }
-        }
-      });
-      
-      setActiveSection(currentSection);
     };
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', onScroll, { passive: true });
     return () => {
       ctx.revert();
-      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('scroll', onScroll);
     };
-  }, []);
+  }, [handleScroll]);
 
-  const handleClick = (e, id) => {
+  const handleClick = useCallback((e, id) => {
     e.preventDefault();
     
     // Immediately update active section for instant visual feedback
@@ -285,12 +299,31 @@ const Nav = () => {
     
     setIsMenuOpen(false);
     document.body.style.overflow = 'auto';
-  };
+  }, []);
   
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
-    document.body.style.overflow = !isMenuOpen ? 'hidden' : 'auto';
-  };
+  const toggleMenu = useCallback(() => {
+    setIsMenuOpen(prev => {
+      const newState = !prev;
+      document.body.style.overflow = newState ? 'hidden' : 'auto';
+      return newState;
+    });
+  }, []);
+
+  // Memoize navigation items
+  const navigationItems = useMemo(() => 
+    sections.map(({ id, label }) => (
+      <li key={id}>
+        <a
+          href={`#${id}`}
+          className={`nav-link ${activeSection === id ? 'active' : ''}`}
+          onClick={(e) => handleClick(e, id)}
+        >
+          {label}
+        </a>
+      </li>
+    )), 
+    [sections, activeSection, handleClick]
+  );
 
   return (
     <StyledNav ref={navRef}>
@@ -310,21 +343,12 @@ const Nav = () => {
         </div>
         
         <ul className={isMenuOpen ? 'open' : ''}>
-          {sections.map(({ id, label }) => (
-            <li key={id}>
-              <a
-                href={`#${id}`}
-                className={`nav-link ${activeSection === id ? 'active' : ''}`}
-                onClick={(e) => handleClick(e, id)}
-              >
-                {label}
-              </a>
-            </li>
-          ))}
+          {navigationItems}
         </ul>
       </div>
     </StyledNav>
   );
 };
 
-export default Nav;
+// Memoize the component to prevent unnecessary re-renders
+export default memo(Nav);
