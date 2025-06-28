@@ -13,6 +13,9 @@ A modern, interactive portfolio website built with React, featuring stunning 3D 
 - **🧭 Smooth Navigation** - Single-page application with smooth scrolling
 - **📄 Dynamic Content** - Organized sections for About, Projects, and Contact
 - **⚡ Fast Performance** - Built with Vite for lightning-fast development and builds
+- **🔧 Bundle Optimization** - Code splitting and lazy loading for optimal performance
+- **🛡️ Error Handling** - Comprehensive WebGL error handling and graceful fallbacks
+- **🔒 Security Headers** - Production-ready security configurations
 
 ## 🛠️ Built With
 
@@ -34,6 +37,27 @@ A modern, interactive portfolio website built with React, featuring stunning 3D 
 ### Additional Libraries
 - **SplitType** - Text animation and splitting
 - **React Intersection Observer** - Viewport intersection detection
+- **Honeybadger** - Error tracking and monitoring
+- **Terser** - JavaScript minification for optimal bundle sizes
+
+## ⚡ Performance & Security
+
+### Bundle Optimization
+- **Code Splitting** - Separate chunks for React, Three.js, Spline, and utilities
+- **Lazy Loading** - 3D models and heavy libraries load only when needed
+- **Terser Minification** - Optimized JavaScript bundles with console removal in production
+- **Asset Caching** - Long-term caching headers for static assets
+
+### Error Handling
+- **WebGL Validation** - Comprehensive WebGL context validation and fallbacks
+- **Console Suppression** - Clean console output by filtering Three.js/WebGL warnings
+- **Error Boundaries** - React error boundaries for graceful degradation
+- **Mobile Optimization** - Conditional 3D rendering based on device capabilities
+
+### Security
+- **HTTPS Enforcement** - Automatic HTTP to HTTPS redirects
+- **Security Headers** - XSS protection, content type sniffing prevention
+- **Error Monitoring** - Honeybadger integration for production error tracking
 
 ## 🚀 Getting Started
 
