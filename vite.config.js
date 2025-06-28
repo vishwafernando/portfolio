@@ -37,7 +37,7 @@ export default defineConfig({
       }
     },
     // Increase chunk size warning limit
-    chunkSizeWarningLimit: 1000,
+    chunkSizeWarningLimit: 2000,
     // Enable source maps for better debugging
     sourcemap: false, // Disable in production for smaller bundles
     // Minify for smaller bundles
