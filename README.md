@@ -69,7 +69,7 @@ A modern, interactive portfolio website built with React, featuring stunning 3D 
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/portfolio.git
+   git clone https://github.com/vishwafernando/portfolio.git
    cd portfolio
    ```
 
