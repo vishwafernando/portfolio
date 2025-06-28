@@ -6,7 +6,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 // Register GSAP plugins
 gsap.registerPlugin(ScrollTrigger);
 
-// Skills data with icons
+// Skills data with icons 
 const skills = [
   { 
     name: 'HTML', 

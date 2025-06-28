@@ -6,7 +6,7 @@ const StyledFooter = styled.footer`
   border-top: 1px solid rgba(8, 247, 254, 0.3);
   padding: clamp(2rem, 6vw, 3rem) 0 1.5rem;
   position: relative;
-  overflow: hidden;
+  overflow: hidden; 
   
   /* Grid lines */
   &::before {

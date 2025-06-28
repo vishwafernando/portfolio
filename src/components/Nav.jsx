@@ -4,7 +4,7 @@ import { gsap } from 'gsap';
 // Importing GSAP context for better performance
 const StyledNav = styled.nav`
   position: fixed;
-  top: 0;
+  top: 0; 
   left: 0;
   width: 100%;
   padding: 1.2rem clamp(1rem, 5vw, 5%);

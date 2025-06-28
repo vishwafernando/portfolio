@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 const useResponsive = () => {
   const [screenSize, setScreenSize] = useState({
     width: typeof window !== 'undefined' ? window.innerWidth : 1200,
-    height: typeof window !== 'undefined' ? window.innerHeight : 800,
+    height: typeof window !== 'undefined' ? window.innerHeight : 800, 
   });
 
   const [isMobile, setIsMobile] = useState(false);

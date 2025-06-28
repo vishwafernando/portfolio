@@ -4,7 +4,7 @@ import styled, { keyframes } from 'styled-components';
 const fadeOut = keyframes`
   from {
     opacity: 1;
-    visibility: visible;
+    visibility: visible; 
   }
   to {
     opacity: 0;

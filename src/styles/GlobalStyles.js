@@ -2,7 +2,7 @@ import { createGlobalStyle } from 'styled-components';
  
 const GlobalStyles = createGlobalStyle`
   :root {
-    --neon-pink: #ff2e63;
+    --neon-pink: #ff2e63; 
     --neon-blue: #08f7fe;
     --neon-yellow: #f7df1e;
     --neon-white: #ffffff;

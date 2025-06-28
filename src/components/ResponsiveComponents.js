@@ -3,7 +3,7 @@ import styled from 'styled-components';
 // Responsive Container Component 
 export const ResponsiveContainer = styled.div`
   max-width: 1400px;
-  margin: 0 auto;
+  margin: 0 auto; 
   padding: 0 clamp(1rem, 5vw, 2rem);
   width: 100%;
 `;

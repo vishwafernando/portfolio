@@ -6,7 +6,7 @@ import App from './App.jsx'
 import { Honeybadger, HoneybadgerErrorBoundary } from "@honeybadger-io/react"
  
 // Configure Honeybadger
-const config = {
+const config = { 
    apiKey: import.meta.env.VITE_HONEYBADGER_API_KEY,
     environment: import.meta.env.VITE_ENVIRONMENT || "production",
     debug: import.meta.env.DEV // Enable debug in development
