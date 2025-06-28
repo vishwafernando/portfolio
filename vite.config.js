@@ -58,10 +58,28 @@ export default defineConfig({
       '@react-three/fiber',
       '@react-three/drei',
       'gsap',
-      'styled-components'
+      'styled-components',
+      'lodash.debounce' // Include lodash.debounce to fix ES module issue
     ],
     exclude: [
       '@splinetool/react-spline' // Keep this excluded for lazy loading
-    ]
+    ],
+    // Force pre-bundling of problematic dependencies
+    force: true
+  },
+  // Add resolve configuration to handle module resolution
+  resolve: {
+    alias: {
+      // Force lodash.debounce to use the correct path
+      'lodash.debounce': 'lodash.debounce'
+    }
+  },
+  // Configure how to handle different module types
+  ssr: {
+    noExternal: ['lodash.debounce']
+  },
+  // Define configuration for better module handling
+  define: {
+    global: 'globalThis',
   }
 })
