@@ -794,15 +794,15 @@ const Contact = () => {
         <div className="contact-form">
           <form ref={formRef} onSubmit={handleSubmit}>
             <div className="form-group">
-              <input type="text" id="name" name="from_name" placeholder=" " required />
-              <label htmlFor="from_name">Your Name</label>
+              <input type="text" id="name" name="from_name" placeholder=" " required autocomplete="name" />
+              <label htmlFor="name">Your Name</label>
             </div>
             <div className="form-group">
-              <input type="email" id="email" name="from_email" placeholder=" " required />
-              <label htmlFor="from_email">Your Email</label>
+              <input type="email" id="email" name="from_email" placeholder=" " required autocomplete="email" />
+              <label htmlFor="email">Your Email</label>
             </div>
             <div className="form-group">
-              <textarea id="message" name="message" placeholder=" " required></textarea>
+              <textarea id="message" name="message" placeholder=" " required autocomplete="message"></textarea>
               <label htmlFor="message">Your Message</label>
             </div>
             <input type="hidden" name="time" />
