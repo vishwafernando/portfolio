@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import emailjs from '@emailjs/browser';
- 
+
 gsap.registerPlugin(ScrollTrigger);
 
 const StyledContact = styled.section`
@@ -15,14 +15,14 @@ const StyledContact = styled.section`
   display: flex;
   align-items: center;
   justify-content: center;
-  
+
   @media (max-width: 768px) {
     min-height: auto;
     padding: 4rem 1rem;
     align-items: flex-start;
     padding-top: 6rem;
   }
-  
+
   @media (max-width: 480px) {
     padding: 3rem 0.5rem;
     padding-top: 5rem;
@@ -83,7 +83,7 @@ const StyledContact = styled.section`
         border-radius: 15px;
       }
     }
-    
+
     @media (max-width: 480px) {
       padding: 1.5rem;
       gap: 1.5rem;
@@ -112,7 +112,7 @@ const StyledContact = styled.section`
     letter-spacing: -1px;
     position: relative;
     overflow: hidden;
-    
+
     &::before {
       content: '';
       position: absolute;
@@ -131,7 +131,7 @@ const StyledContact = styled.section`
     &:hover::before {
       left: 100%;
     }
-    
+
     @media (max-width: 480px) {
       margin-bottom: 1.5rem;
     }
@@ -222,7 +222,7 @@ const StyledContact = styled.section`
         pointer-events: none;
         font-family: 'Poppins', sans-serif;
         z-index: 1;
-        
+
         @media (max-width: 480px) {
           font-size: 0.9rem;
         }
@@ -275,7 +275,7 @@ const StyledContact = styled.section`
       textarea {
         min-height: 150px;
         resize: vertical;
-        
+
         @media (max-width: 480px) {
           min-height: 120px;
         }
@@ -323,7 +323,7 @@ const StyledContact = styled.section`
         color: var(--dark-bg);
         transform: translateY(-2px) scale(1.02);
         box-shadow: 0 8px 25px rgba(8, 247, 254, 0.4);
-        
+
         &::before {
           transform: scaleX(1);
           transform-origin: left;
@@ -424,9 +424,9 @@ const Contact = () => {
   // Enhanced animation function with particle effects and advanced sequencing
   const animateContact = useCallback(() => {
     if (isAnimated || !sectionRef.current) return;
-    
+
     setIsAnimated(true);
-    
+
     const section = sectionRef.current;
     const contactInfo = section.querySelector('.contact-info');
     const formGroups = section.querySelectorAll('.form-group');
@@ -434,21 +434,21 @@ const Contact = () => {
     const socialLinks = section.querySelectorAll('.social-links a');
     const submitButton = section.querySelector('button');
     const grid = section.querySelector('.grid');
-    
+
     // Kill existing timeline
     if (timelineRef.current) {
       timelineRef.current.kill();
     }
-    
+
     // Create master timeline with advanced defaults
     const masterTL = gsap.timeline({
       defaults: { ease: 'power2.out' }
     });
     timelineRef.current = masterTL;
-    
+
     // Create floating particles
     createFloatingParticles();
-    
+
     // Set initial states for all elements
     gsap.set([contactInfo, formGroups], { opacity: 0 });
     gsap.set(title, { opacity: 0, y: -30, rotationX: 45 });
@@ -457,7 +457,7 @@ const Contact = () => {
     gsap.set(formGroups, { opacity: 0, x: 50, rotationY: 15 });
     gsap.set(submitButton, { opacity: 0, scale: 0.8, y: 20 });
     gsap.set(grid, { scale: 0.95, opacity: 0 });
-    
+
     // Enhanced animation sequence
     masterTL
       // Grid container entrance with scale
@@ -520,7 +520,7 @@ const Contact = () => {
 
     // Add hover animations for interactive elements
     addHoverAnimations();
-      
+
     return masterTL;
   }, [isAnimated]);
 
@@ -530,7 +530,7 @@ const Contact = () => {
 
     const section = sectionRef.current;
     let particlesContainer = section.querySelector('.floating-particles');
-    
+
     if (!particlesContainer) {
       particlesContainer = document.createElement('div');
       particlesContainer.className = 'floating-particles';
@@ -588,7 +588,7 @@ const Contact = () => {
           duration: 0.3,
           ease: 'back.out(2)'
         });
-        
+
         // Create ripple effect
         createRippleEffect(link, index);
       });
@@ -633,7 +633,7 @@ const Contact = () => {
           repeat: -1
         });
       };
-      
+
       setTimeout(pulseAnimation, 2000);
     }
   }, []);
@@ -654,9 +654,9 @@ const Contact = () => {
       pointer-events: none;
       z-index: 1000;
     `;
-    
+
     element.appendChild(ripple);
-    
+
     gsap.to(ripple, {
       scale: 8,
       opacity: 0,
@@ -748,33 +748,18 @@ const Contact = () => {
       timeInput.value = formatted;
     }
     setStatus('Sending...');
-    // Debug: log env variables
-    console.log('EmailJS config:',
-      import.meta.VITE_EMAILJS_SERVICE_ID,
-      import.meta.VITE_EMAILJS_TEMPLATE_ID,
-      import.meta.VITE_EMAILJS_USER_ID
-    );
     emailjs.sendForm(
-      import.meta.VITE_EMAILJS_SERVICE_ID,
-      import.meta.VITE_EMAILJS_TEMPLATE_ID,
+      import.meta.env.VITE_EMAILJS_SERVICE_ID,
+      import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
       formRef.current,
-      import.meta.VITE_EMAILJS_USER_ID
+      import.meta.env.VITE_EMAILJS_USER_ID
     )
     .then((result) => {
       setStatus('Message sent successfully!');
       formRef.current.reset();
     }, (error) => {
       setStatus('Failed to send message. Please try again.');
-      // Improved debug: log full error details
       console.error('EmailJS error:', error);
-      if (error && error.text) {
-        console.error('EmailJS error text:', error.text);
-      }
-      if (error && error.response) {
-        error.response.text().then((text) => {
-          console.error('EmailJS error response:', text);
-        });
-      }
     });
   };
 
