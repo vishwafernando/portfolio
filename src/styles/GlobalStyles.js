@@ -45,6 +45,25 @@ const GlobalStyles = createGlobalStyle`
     min-height: 100vh;
   }
 
+  /* Responsive font sizes */
+  @media (max-width: 1200px) {
+    html {
+      font-size: 14px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    html {
+      font-size: 13px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    html {
+      font-size: 12px;
+    }
+  }
+
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Orbitron', sans-serif;
     font-weight: 700;
@@ -102,13 +121,90 @@ const GlobalStyles = createGlobalStyle`
     pointer-events: none;
   }
 
-  /* Ensure proper stacking context */
+  /* Ensure proper responsive sections */
   section {
     position: relative;
     z-index: 10;
     width: 100%;
     min-height: 100vh;
     display: block;
+    
+    @media (max-width: 768px) {
+      min-height: auto;
+    }
+  }
+
+  /* Responsive container utility */
+  .container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    width: 100%;
+    
+    @media (max-width: 1200px) {
+      padding: 0 1.5rem;
+    }
+    
+    @media (max-width: 768px) {
+      padding: 0 1rem;
+    }
+    
+    @media (max-width: 480px) {
+      padding: 0 0.75rem;
+    }
+  }
+
+  /* Responsive text utilities */
+  .text-responsive {
+    font-size: clamp(1rem, 2.5vw, 1.2rem);
+    line-height: 1.6;
+  }
+
+  .heading-responsive {
+    font-size: clamp(2rem, 5vw, 3rem);
+    line-height: 1.2;
+  }
+
+  /* Responsive spacing utilities */
+  .section-spacing {
+    padding: clamp(4rem, 10vh, 8rem) 0;
+    
+    @media (max-width: 768px) {
+      padding: clamp(3rem, 8vh, 6rem) 0;
+    }
+  }
+
+  /* Responsive grid utilities */
+  .grid-responsive {
+    display: grid;
+    gap: clamp(1rem, 4vw, 2rem);
+    
+    &.grid-2 {
+      grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
+    }
+    
+    &.grid-3 {
+      grid-template-columns: repeat(auto-fit, minmax(min(250px, 100%), 1fr));
+    }
+  }
+
+  /* Performance optimizations */
+  * {
+    will-change: auto;
+  }
+
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* Reduce motion for accessibility */
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
   }
 `;
 

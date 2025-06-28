@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useCallback, useMemo, memo } from 'react';
+import { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 import styled from 'styled-components';
 import { gsap } from 'gsap';
 
@@ -7,7 +7,7 @@ const StyledNav = styled.nav`
   top: 0;
   left: 0;
   width: 100%;
-  padding: 1.2rem 5%;
+  padding: 1.2rem clamp(1rem, 5vw, 5%);
   z-index: 1000;
   background: rgba(5, 5, 6, 0.85);
   backdrop-filter: blur(10px);
@@ -37,36 +37,23 @@ const StyledNav = styled.nav`
     display: flex;
     justify-content: space-between;
     align-items: center;
-    position: relative;
   }
 
   .nav-logo {
     font-family: 'Orbitron', sans-serif;
-    font-size: 1rem;
+    font-size: clamp(0.8rem, 2.5vw, 1rem);
     font-weight: 700;
     color: var(--neon-blue);
     text-transform: uppercase;
     letter-spacing: 2px;
     text-shadow: 0 0 10px rgba(8, 247, 254, 0.5);
-    position: relative;
-    
-    &::after {
-      content: '';
-      position: absolute;
-      left: 0;
-      top: 0;
-      color: var(--neon-pink);
-      opacity: 0.4;
-      filter: blur(3px);
-      transform: translateX(-3px);
-    }
   }
 
   ul {
     display: flex;
     justify-content: flex-end;
     align-items: center;
-    gap: 3rem;
+    gap: clamp(1.5rem, 4vw, 3rem);
     list-style: none;
     margin: 0;
     padding: 0;
@@ -75,13 +62,13 @@ const StyledNav = styled.nav`
   a {
     color: var(--text-primary);
     text-decoration: none;
-    font-size: 0.9rem;
+    font-size: clamp(0.7rem, 2vw, 0.9rem);
     text-transform: uppercase;
-    letter-spacing: 3px;
+    letter-spacing: 2px;
     font-weight: 500;
     position: relative;
     padding: 5px 0;
-    transition: color 0.3s ease;
+    transition: all 0.3s ease;
     font-family: 'Poppins', sans-serif;
     
     &::before {
@@ -96,22 +83,14 @@ const StyledNav = styled.nav`
       transition: width 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     }
     
-    &:hover {
+    &:hover,
+    &.active {
       color: var(--neon-blue);
       text-shadow: 0 0 8px rgba(8, 247, 254, 0.5);
       
       &::before {
         width: 100%;
       }
-    }
-  }
-
-  .active {
-    color: var(--neon-blue);
-    text-shadow: 0 0 8px rgba(8, 247, 254, 0.5);
-    
-    &::before {
-      width: 100%;
     }
   }
   
@@ -122,7 +101,7 @@ const StyledNav = styled.nav`
     width: 30px;
     height: 20px;
     cursor: pointer;
-    z-index: 1000;
+    z-index: 1001;
     
     span {
       display: block;
@@ -133,15 +112,25 @@ const StyledNav = styled.nav`
       transition: all 0.3s ease;
       box-shadow: 0 0 5px var(--neon-blue);
     }
+    
+    &.open {
+      span:nth-child(1) {
+        transform: translateY(9px) rotate(45deg);
+      }
+      
+      span:nth-child(2) {
+        opacity: 0;
+      }
+      
+      span:nth-child(3) {
+        transform: translateY(-9px) rotate(-45deg);
+      }
+    }
   }
 
   @media (max-width: 768px) {
     .hamburger {
       display: flex;
-    }
-    
-    .nav-content {
-      position: relative;
     }
 
     ul {
@@ -161,27 +150,14 @@ const StyledNav = styled.nav`
       backdrop-filter: blur(10px);
       border-left: 1px solid rgba(8, 247, 254, 0.2);
       
-      a {
-        font-size: 1.2rem;
-      }
-      
       &.open {
         transform: translateX(0);
         box-shadow: -10px 0 30px rgba(0, 0, 0, 0.5);
       }
-    }
-    
-    .hamburger.open {
-      span:nth-child(1) {
-        transform: translateY(9px) rotate(45deg);
-      }
       
-      span:nth-child(2) {
-        opacity: 0;
-      }
-      
-      span:nth-child(3) {
-        transform: translateY(-9px) rotate(-45deg);
+      a {
+        font-size: 1.2rem;
+        letter-spacing: 3px;
       }
     }
   }
@@ -351,4 +327,4 @@ const Nav = () => {
 };
 
 // Memoize the component to prevent unnecessary re-renders
-export default memo(Nav);
+export default Nav;

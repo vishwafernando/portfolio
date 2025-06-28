@@ -180,7 +180,7 @@ const ProjectCard = styled(motion.div)`
     }
     
     .project-image {
-      transform: scale(1.7);
+      transform: scale(1.4);
       z-index: 10;
       box-shadow: 0 15px 40px rgba(8, 247, 254, 0.3);
     }

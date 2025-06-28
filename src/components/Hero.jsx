@@ -184,21 +184,33 @@ const StyledHero = styled.section`
     width: 100%;
     max-width: 1400px;
     margin: 0 auto;
-    padding: 0 2rem;
+    padding: 0 clamp(1rem, 5vw, 2rem);
     display: grid;
     grid-template-columns: 1fr 1fr;
     align-items: center;
     height: 100%;
-    gap: 2rem;
+    gap: clamp(1rem, 4vw, 2rem);
+    
+    @media (max-width: 1000px) and (min-width: 769px) {
+      grid-template-columns: 1fr 1fr;
+      text-align: left;
+      gap: 1.5rem;
+      align-items: center;
+      padding: 0 clamp(1rem, 4vw, 1.5rem);
+    }
     
     @media (max-width: 992px) {
       grid-template-columns: 1fr;
       text-align: center;
-      padding: 0 1.5rem;
+      gap: 0.5rem;
+      
     }
     
-    @media (max-width: 480px) {
-      padding: 0 1rem;
+    @media (max-width: 768px) {
+      align-items: center;
+      justify-content: flex-start;
+      padding-top: 4rem;
+      min-height: auto;
     }
   }
   
@@ -213,18 +225,66 @@ const StyledHero = styled.section`
     justify-content: center;
     align-items: center;
     height: 100%;
-    width: 500px;
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+    
+    @media (max-width: 1000px) and (min-width: 769px) {
+      max-width: 450px;
+      height: 450px;
+      justify-content: center;
+      align-items: flex-start;
+      margin-top: -2rem;
+    }
+    
+    @media (max-width: 992px) and (min-width: 769px) {
+      order: -1;
+      max-width: 400px;
+      height: 400px;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    @media (max-width: 768px) {
+      display: none; /* Completely hide on mobile */
+    }
+    
+    @media (max-width: 480px) {
+      display: none; /* Ensure it stays hidden on small mobile */
+    }
   }
 
   .hero-sphere {
     position: absolute;
     top: 50%;
-    left: 65%;
+    left: 50%;
     transform: translate(-50%, -50%);
-    width: 400px;
-    height: 400px;
+    width: min(400px, 80vw);
+    height: min(400px, 80vw);
     z-index: 1;
     opacity: 0; 
+    
+    @media (max-width: 1000px) and (min-width: 769px) {
+      top: 45%;
+      left: 55%;
+      width: min(320px, 65vw);
+      height: min(320px, 65vw);
+    }
+    
+    @media (max-width: 992px) and (min-width: 769px) {
+      left: 12%;
+      top: 60%;
+      width: min(350px, 70vw);
+      height: min(350px, 70vw);
+    }
+    
+    @media (max-width: 768px) {
+      display: none; /* Hide sphere on mobile */
+    }
+    
+    @media (max-width: 480px) {
+      display: none; /* Ensure it stays hidden on small mobile */
+    }
     
     &::before {
       content: '';
@@ -253,14 +313,36 @@ const StyledHero = styled.section`
   .spline-container {
     position: absolute;
     top: 50%;
-    left: 75%;
+    left: 60%;
     transform: translate(-50%, -50%);
-    width: 500px;
-    height: 500px;
+    width: min(500px, 85vw);
+    height: min(500px, 85vw);
     border-radius: 50%;
     overflow: hidden;
     z-index: 3;
     opacity: 0; 
+    
+    @media (max-width: 1000px) and (min-width: 769px) {
+      top: 45%;
+      left: 65%;
+      width: min(380px, 70vw);
+      height: min(380px, 70vw);
+    }
+    
+    @media (max-width: 992px) and (min-width: 769px) {
+      left: 65%;
+      top: 60%;
+      width: min(400px, 75vw);
+      height: min(400px, 75vw);
+    }
+    
+    @media (max-width: 768px) {
+      display: none; /* Hide 3D model on mobile */
+    }
+    
+    @media (max-width: 480px) {
+      display: none; /* Ensure it stays hidden on small mobile */
+    }
     
     &::before {
       content: '';
@@ -274,11 +356,11 @@ const StyledHero = styled.section`
       pointer-events: none;
       z-index: 2;
     }
+    }
     
     canvas {
       width: 100% !important;
       height: 100% !important;
-      border-radius: 50%;
     }
   }
   
@@ -295,14 +377,10 @@ const StyledHero = styled.section`
     color: #fff;
     text-transform: uppercase;
     font-family: 'Orbitron', sans-serif;
-    letter-spacing: -2px;
+    letter-spacing: clamp(-2px, -0.5vw, -1px);
     position: relative;
     display: inline-block;
     text-shadow: 0 0 20px rgba(8, 247, 254, 0.4);
-    
-    @media (max-width: 480px) {
-      letter-spacing: -1px;
-    }
   }
   
   .char {
@@ -311,7 +389,7 @@ const StyledHero = styled.section`
     color: var(--text-primary);
     
     &[data-char="."] {
-      margin-right: 1rem;
+      margin-right: clamp(0.5rem, 2vw, 1rem);
     }
     
     &::before,
@@ -534,6 +612,11 @@ const StyledHero = styled.section`
     transition: opacity 0.3s ease;
     z-index: 10;
     
+    @media (min-width: 768px) and (max-width: 992px) {
+      bottom: 20Ppx;
+      opacity: 0.6;
+    }
+    
     &:hover {
       opacity: 1;
     }
@@ -573,7 +656,11 @@ const StyledHero = styled.section`
     height: 100%;
     z-index: 1;
     pointer-events: none;
-    opacity: 0.7;
+    opacity: 1;
+    
+    @media (max-width: 768px) {
+      opacity: 0.8; /* Slightly reduced opacity on mobile for better readability */
+    }
   }
 
   /* Animations */
@@ -611,14 +698,37 @@ const StyledHero = styled.section`
     }
   }
 
+  @media (max-width: 1000px) and (min-width: 769px) {
+    .container {
+      grid-template-columns: 1fr 1fr;
+      text-align: left;
+      align-items: center;
+      gap: 1rem;
+    }
+    
+    .hero-content {
+      order: 1;
+    }
+    
+    .hero-visual {
+      order: 2;
+    }
+    
+    .description {
+      text-align: left;
+      margin-left: 0;
+      margin-right: 0;
+    }
+    
+    .cta-container {
+      justify-content: flex-start;
+    }
+  }
+
   @media (max-width: 992px) {
     .container {
       grid-template-columns: 1fr;
       text-align: center;
-    }
-    
-    .hero-visual {
-      display: none;
     }
     
     .description {
@@ -629,12 +739,47 @@ const StyledHero = styled.section`
     
     .cta-container {
       justify-content: center;
+      margin-bottom: 3rem;
+    }
+    
+    .scroll-indicator {
+      bottom: 15px;
+      opacity: 0.5;
+    }
+  }
+
+  @media (min-width: 768px) and (max-width: 992px) {
+    .container {
+      padding-bottom: 8rem;
+    }
+    
+    .cta-container {
+      margin-bottom: 7rem;
+    }
+    
+    .scroll-indicator {
+      bottom: 15px;
+      opacity: 0.4;
+      transform: translateX(-50%) scale(0.9);
+    }
+  }
+
+  @media (min-width: 778px) and (max-width: 992px) {
+    .scroll-indicator {
+      bottom: 0px;
+      opacity: 0.3;
     }
   }
 
   @media (max-width: 768px) {
     .container {
       padding: 0 1.5rem;
+      padding-top: 4rem;
+      align-items: flex-start;
+    }
+    
+    .hero-content {
+      margin-top: 2rem;
     }
     
     .glitch-title {
@@ -647,29 +792,17 @@ const StyledHero = styled.section`
     
     .description {
       font-size: 1rem;
+      text-align: center;
     }
     
     .cta-container {
       flex-direction: column;
       width: 100%;
+      margin-bottom: 4rem;
       
       .cta-button {
         width: 100%;
       }
-    }
-    
-    .hero-visual {
-      width: 300px;
-    }
-    
-    .spline-container {
-      width: 300px;
-      height: 300px;
-    }
-    
-    .hero-sphere {
-      width: 250px;
-      height: 250px;
     }
     
     .scroll-indicator {
@@ -849,7 +982,7 @@ const SplineModel = ({ scene, isVisible }) => {
       SplineComponent={SplineComponent}
       scene={scene}
       onLoad={() => {
-        console.log('Spline model loaded successfully');
+        // Spline model loaded successfully
       }}
       onError={(error) => {
         console.warn('Spline model error:', error);
@@ -966,13 +1099,17 @@ const HeroBackground = () => {
     
     const handleMouseMove = (event) => {
       try {
+        // Additional safety check
+        if (!camera) return;
+        
         // Get mouse position relative to viewport
         const x = (event.clientX / window.innerWidth) * 2 - 1;
         const y = -(event.clientY / window.innerHeight) * 2 + 1;
 
-        // Apply subtle movement to camera position
-        camera.position.x = x * 2;
-        camera.position.y = y * 2;
+        // Apply subtle movement to camera position (reduced on mobile)
+        const sensitivity = window.innerWidth <= 768 ? 0.3 : 1;
+        camera.position.x = x * sensitivity;
+        camera.position.y = y * sensitivity;
         camera.lookAt(0, 0, 0);
       } catch (error) {
         console.warn('Camera movement error:', error);
@@ -991,28 +1128,35 @@ const HeroBackground = () => {
     return null;
   }
 
+  // Adjust settings based on screen size for better mobile performance
+  const isMobile = window.innerWidth <= 768;
+  const starCount = isMobile ? 2000 : 5000; // Fewer stars on mobile
+  const autoRotateSpeed = isMobile ? 0.1 : 0.3; // Slower rotation on mobile
+
   return (
     <>
       <OrbitControls
         enableZoom={false}
         autoRotate
-        autoRotateSpeed={0.3}
+        autoRotateSpeed={autoRotateSpeed}
         enablePan={false}
         enableDamping
         dampingFactor={0.05}
+        maxPolarAngle={Math.PI}
+        minPolarAngle={0}
       />
       <Stars
-        radius={100}
-        depth={50}
-        count={5000}
-        factor={4}
+        radius={300}
+        depth={100}
+        count={starCount}
+        factor={6}
         fade
         speed={1}
       />
       <pointLight position={[10, 10, 10]} intensity={1.5} color="#08f7fe" />
       <pointLight position={[-10, -10, -10]} intensity={1} color="#7122fa" />
       <ambientLight intensity={0.2} />
-      <fog attach="fog" args={['#000', 5, 30]} />
+      <fog attach="fog" args={['#000', 10, 50]} />
     </>
   );
 };
@@ -1047,7 +1191,7 @@ const Hero = ({ startAnimations = false }) => {
     const checkMobile = () => {
       clearTimeout(resizeTimeout);
       resizeTimeout = setTimeout(() => {
-        const newIsMobile = window.innerWidth <= 992;
+        const newIsMobile = window.innerWidth <= 768; // Changed to <= 768 to include 768px
         setIsMobile(newIsMobile);
       }, 150); // Debounce resize events
     };
@@ -1058,7 +1202,20 @@ const Hero = ({ startAnimations = false }) => {
         const canvas = document.createElement('canvas');
         const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
         const supported = !!gl;
-        setWebglSupported(supported);
+        
+        // Additional WebGL validation
+        if (supported && gl) {
+          try {
+            // Test basic WebGL functionality
+            gl.getParameter(gl.VERSION);
+            setWebglSupported(true);
+          } catch (error) {
+            console.warn('WebGL context test failed:', error);
+            setWebglSupported(false);
+          }
+        } else {
+          setWebglSupported(false);
+        }
       } catch (error) {
         console.warn('WebGL not supported:', error);
         setWebglSupported(false);
@@ -1085,6 +1242,9 @@ const Hero = ({ startAnimations = false }) => {
             const rect = canvasContainerRef.current.getBoundingClientRect();
             setCanvasSize({ width: rect.width, height: rect.height });
             setCanvasReady(rect.width > 0 && rect.height > 0);
+          } else {
+            setCanvasReady(false);
+            setCanvasSize({ width: 0, height: 0 });
           }
         };
         
@@ -1098,6 +1258,7 @@ const Hero = ({ startAnimations = false }) => {
     checkMobile();
     checkWebGL();
     window.addEventListener('resize', checkMobile);
+    window.addEventListener('resize', checkWebGL);
     
     // Set canvas ready after a brief delay to ensure DOM is ready
     setTimeout(() => {
@@ -1106,6 +1267,7 @@ const Hero = ({ startAnimations = false }) => {
     
     return () => {
       window.removeEventListener('resize', checkMobile);
+      window.removeEventListener('resize', checkWebGL);
       clearTimeout(resizeTimeout);
       if (resizeObserver) {
         resizeObserver.disconnect();
@@ -1117,7 +1279,9 @@ const Hero = ({ startAnimations = false }) => {
   useEffect(() => {
     // Add a small delay to prevent rapid state changes during resize
     const timeout = setTimeout(() => {
-      setShouldShow3D(!isMobile && webglSupported);
+      // Allow 3D to show on all devices if WebGL is supported
+      const should3DShow = webglSupported;
+      setShouldShow3D(should3DShow);
     }, 200);
     
     return () => clearTimeout(timeout);
@@ -1263,92 +1427,98 @@ const Hero = ({ startAnimations = false }) => {
   return (
     <StyledHero ref={heroRef} id="home">
       <div className="three-container" ref={canvasContainerRef}>
-        <SafeCanvasWrapper 
-          canvasSize={canvasSize} 
-          webglSupported={webglSupported} 
-          canvasReady={canvasReady && isContainerValid}
-        >
-          <Canvas 
-            camera={{ position: [0, 0, 15], fov: 75 }}
-            frameloop="demand" // Only render when needed to reduce conflicts
-            onCreated={(state) => {
-              try {
-                // Comprehensive validation before proceeding
-                if (!state || !state.gl || !state.size) {
-                  return;
-                }
-                
-                const { width, height } = state.size;
-                if (width === 0 || height === 0) {
-                  return;
-                }
-                
-                // Enhanced WebGL context validation
-                const gl = state.gl;
-                if (!gl || typeof gl.getParameter !== 'function') {
-                  return;
-                }
-                
-                // Check if context is lost
-                if (gl.isContextLost && gl.isContextLost()) {
-                  return;
-                }
-                
-                // Test basic WebGL functionality with safer checks
-                try {
-                  // First check if we can access basic WebGL constants
-                  if (typeof gl.VENDOR === 'undefined' || typeof gl.VERSION === 'undefined') {
-                    return;
-                  }
-                  
-                  // Check drawing buffer dimensions as additional validation
-                  if (gl.drawingBufferWidth === 0 || gl.drawingBufferHeight === 0) {
-                    return;
-                  }
-                  
-                  // Only call getParameter if we're confident the context is valid
-                  const vendor = gl.getParameter(gl.VENDOR);
-                  const version = gl.getParameter(gl.VERSION);
-                  if (!vendor || !version) {
-                    return;
-                  }
-                } catch (contextError) {
-                  // Context is not fully functional, fail silently
-                  return;
-                }
-                
-                // Add context loss listeners only after validation
-                const canvas = gl.domElement;
-                if (canvas) {
-                  canvas.addEventListener('webglcontextlost', (event) => {
-                    event.preventDefault();
-                    setWebglSupported(false);
-                  });
-                  
-                  canvas.addEventListener('webglcontextrestored', () => {
-                    setWebglSupported(true);
-                  });
-                }
-              } catch (error) {
-                // Silently handle any errors in onCreated to prevent console spam
-                return;
-              }
-            }}
-            onError={(error) => {
-              setWebglSupported(false);
-            }}
-            gl={{
-              antialias: true,
-              alpha: true,
-              powerPreference: "high-performance",
-              failIfMajorPerformanceCaveat: false,
-              preserveDrawingBuffer: false
-            }}
-            resize={{ scroll: false, debounce: { scroll: 50, resize: 50 } }}
+        {shouldShow3D && webglSupported && (
+          <SafeCanvasWrapper 
+            canvasSize={canvasSize} 
+            webglSupported={webglSupported} 
+            canvasReady={canvasReady && isContainerValid}
           >
-            <HeroBackground />
-          </Canvas>
-        </SafeCanvasWrapper>
+            <Canvas 
+              camera={{ position: [0, 0, 20], fov: 90 }}
+              frameloop="demand" // Only render when needed to reduce conflicts
+              onCreated={(state) => {
+                try {
+                  // Comprehensive validation before proceeding
+                  if (!state || !state.gl || !state.size) {
+                    return;
+                  }
+                  
+                  const { width, height } = state.size;
+                  if (width === 0 || height === 0) {
+                    return;
+                  }
+                  
+                  // Enhanced WebGL context validation
+                  const gl = state.gl;
+                  if (!gl || typeof gl.getParameter !== 'function') {
+                    return;
+                  }
+                  
+                  // Check if context is lost
+                  if (gl.isContextLost && gl.isContextLost()) {
+                    return;
+                  }
+                  
+                  // Test basic WebGL functionality with safer checks
+                  try {
+                    // First check if we can access basic WebGL constants
+                    if (typeof gl.VENDOR === 'undefined' || typeof gl.VERSION === 'undefined') {
+                      return;
+                    }
+                    
+                    // Check drawing buffer dimensions as additional validation
+                    if (gl.drawingBufferWidth === 0 || gl.drawingBufferHeight === 0) {
+                      return;
+                    }
+                    
+                    // Only call getParameter if we're confident the context is valid
+                    const vendor = gl.getParameter(gl.VENDOR);
+                    const version = gl.getParameter(gl.VERSION);
+                    if (!vendor || !version) {
+                      return;
+                    }
+                  } catch (contextError) {
+                    // Context is not fully functional, fail silently
+                    setWebglSupported(false);
+                    return;
+                  }
+                  
+                  // Add context loss listeners only after validation
+                  const canvas = gl.domElement;
+                  if (canvas) {
+                    canvas.addEventListener('webglcontextlost', (event) => {
+                      event.preventDefault();
+                      setWebglSupported(false);
+                    });
+                    
+                    canvas.addEventListener('webglcontextrestored', () => {
+                      // Restore WebGL support when context is restored
+                      setWebglSupported(true);
+                    });
+                  }
+                } catch (error) {
+                  // Silently handle any errors in onCreated to prevent console spam
+                  setWebglSupported(false);
+                  return;
+                }
+              }}
+              onError={(error) => {
+                console.warn('Canvas error:', error);
+                setWebglSupported(false);
+              }}
+              gl={{
+                antialias: true,
+                alpha: true,
+                powerPreference: "high-performance",
+                failIfMajorPerformanceCaveat: false,
+                preserveDrawingBuffer: false
+              }}
+              resize={{ scroll: false, debounce: { scroll: 50, resize: 50 } }}
+            >
+              <HeroBackground />
+            </Canvas>
+          </SafeCanvasWrapper>
+        )}
       </div>
 
       <div className="container">
@@ -1408,14 +1578,14 @@ const Hero = ({ startAnimations = false }) => {
         </div>
 
         <div className="hero-visual">
-          {shouldShow3D && (
+          {shouldShow3D && !isMobile && webglSupported && window.innerWidth > 768 && (
             <>
               <div className="spline-container" ref={splineContainerRef}>
                 <SplineErrorBoundary>
                   <SplineModel
                     key={`spline-${shouldShow3D}`}
                     scene="https://prod.spline.design/5JsnlbsegYxB4sfm/scene.splinecode"
-                    isVisible={shouldShow3D}
+                    isVisible={shouldShow3D && !isMobile && window.innerWidth > 768}
                   />
                 </SplineErrorBoundary>
               </div>

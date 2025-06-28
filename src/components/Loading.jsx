@@ -1,4 +1,4 @@
-import { useState, useEffect, memo } from 'react';
+import { useState, useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
 
 const fadeOut = keyframes`
@@ -233,4 +233,4 @@ const Loading = ({ onLoadComplete }) => {
   );
 };
 
-export default memo(Loading);
+export default Loading;

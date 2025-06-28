@@ -158,10 +158,23 @@ const skills = [
 const StyledAbout = styled.section`
   min-height: 100vh;
   width: 100%;
-  padding: 120px 0 80px;
+  padding: clamp(4rem, 12vh, 120px) 0 clamp(3rem, 8vh, 80px);
   position: relative;
   background: var(--darker-bg);
   overflow: hidden;
+  
+  @media (max-width: 1024px) {
+    padding: clamp(3rem, 10vh, 100px) 0 clamp(2.5rem, 6vh, 60px);
+  }
+  
+  @media (max-width: 768px) {
+    min-height: auto;
+    padding: 5rem 0 3rem;
+  }
+  
+  @media (max-width: 480px) {
+    padding: 4rem 0 2.5rem;
+  }
   
   /* Diagonal line dividers */
   &::before,
@@ -172,6 +185,10 @@ const StyledAbout = styled.section`
     height: 1px;
     background: linear-gradient(90deg, transparent, rgba(8, 247, 254, 0.3), transparent);
     z-index: 1;
+    
+    @media (max-width: 768px) {
+      display: none;
+    }
   }
   
   &::before {
@@ -190,19 +207,15 @@ const StyledAbout = styled.section`
     max-width: 1200px;
     margin: 0 auto;
     width: 100%;
-    padding: 0 2rem;
+    padding: 0 clamp(1rem, 5vw, 2rem);
     position: relative;
     z-index: 5;
-    
-    @media (max-width: 480px) {
-      padding: 0 1rem;
-    }
   }
   
   .section-title {
     font-size: clamp(2rem, 5vw, 2.5rem);
     font-weight: 700;
-    margin-bottom: 1.5rem;
+    margin-bottom: clamp(1.5rem, 4vw, 2rem);
     color: var(--text-primary);
     font-family: 'Orbitron', sans-serif;
     text-transform: uppercase;
@@ -221,46 +234,69 @@ const StyledAbout = styled.section`
       border-radius: 3px;
     }
     
-    @media (max-width: 480px) {
-      margin-bottom: 1rem;
+    @media (min-width: 769px) and (max-width: 1000px) {
+      margin-bottom: clamp(2rem, 5vw, 2.5rem);
+      font-size: clamp(1.8rem, 4vw, 2.2rem);
+    }
+    
+    @media (max-width: 768px) {
+      text-align: center;
+      margin-bottom: clamp(1.2rem, 3vw, 1.5rem);
       
       &::after {
         height: 2px;
         bottom: -8px;
       }
     }
+    
+    @media (max-width: 480px) {
+      &::after {
+        height: 2px;
+        bottom: -6px;
+      }
+    }
   }
     
   .section-subtitle {
-    font-size: clamp(1.5rem, 4vw, 2rem);
+    font-size: clamp(1.2rem, 3.5vw, 1.8rem);
     color: var(--neon-blue);
-    margin-bottom: 3rem;
+    margin-bottom: clamp(2rem, 5vw, 3rem);
     font-family: 'Poppins', sans-serif;
     font-weight: 400;
-    letter-spacing: 1px;
+    letter-spacing: clamp(0.5px, 1vw, 1px);
     
-    @media (max-width: 480px) {
-      margin-bottom: 2rem;
-      letter-spacing: 0.5px;
+    @media (max-width: 768px) {
+      text-align: center;
     }
   }
   
   .p-subtitle {
-    font-size: clamp(1.5rem, 4vw, 2rem);
+    font-size: clamp(1.2rem, 3.5vw, 1.8rem);
     color: var(--neon-white);
-    margin-bottom: 3rem;
+    margin-bottom: clamp(2.5rem, 6vw, 3.5rem);
     font-family: 'Poppins', sans-serif;
     font-weight: 400;
-    letter-spacing: 1px;
+    letter-spacing: clamp(0.5px, 1vw, 1px);
     line-height: 1.4;
     
-    @media (max-width: 480px) {
-      margin-bottom: 2rem;
-      letter-spacing: 0.5px;
+    @media (min-width: 769px) and (max-width: 1000px) {
+      margin-bottom: clamp(3rem, 7vw, 4rem);
+      font-size: clamp(1.1rem, 3vw, 1.6rem);
+      line-height: 1.5;
+    }
+    
+    @media (max-width: 768px) {
+      text-align: center;
       line-height: 1.3;
+      margin-bottom: clamp(2rem, 5vw, 3rem);
     }
     
     img {
+      @media (max-width: 768px) {
+        width: 40px;
+        height: auto;
+      }
+      
       @media (max-width: 480px) {
         width: 35px;
         height: auto;
@@ -271,12 +307,22 @@ const StyledAbout = styled.section`
   .grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 4rem;
+    gap: clamp(2rem, 6vw, 4rem);
     align-items: start;
+    
+    @media (min-width: 1001px) {
+      gap: clamp(3rem, 6vw, 4rem);
+    }
+    
+    @media (min-width: 769px) and (max-width: 1000px) {
+      gap: clamp(2.5rem, 5vw, 3.5rem);
+      grid-template-columns: 1fr 1fr;
+      align-items: flex-start;
+    }
     
     @media (max-width: 768px) {
       grid-template-columns: 1fr;
-      gap: 3rem;
+      gap: clamp(2rem, 4vw, 3rem);
     }
     
     @media (max-width: 480px) {
@@ -287,16 +333,26 @@ const StyledAbout = styled.section`
   .about-content {
     color: var(--text-primary);
     
+    @media (max-width: 768px) {
+      text-align: center;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    
     p {
-      font-size: clamp(1rem, 2.5vw, 1.1rem);
+      font-size: clamp(0.95rem, 2.5vw, 1.1rem);
       line-height: 1.8;
-      margin-bottom: 1.5rem;
+      margin-bottom: clamp(1rem, 3vw, 1.5rem);
       color: rgba(255, 255, 255, 0.85);
       font-family: 'Poppins', sans-serif;
       
+      @media (max-width: 768px) {
+        line-height: 1.7;
+      }
+      
       @media (max-width: 480px) {
         line-height: 1.6;
-        margin-bottom: 1.2rem;
+        text-align: left;
       }
     }
     
@@ -319,6 +375,11 @@ const StyledAbout = styled.section`
     }
     
     img {
+      @media (max-width: 768px) {
+        width: 18px;
+        height: auto;
+      }
+      
       @media (max-width: 480px) {
         width: 16px;
         height: auto;
@@ -329,6 +390,14 @@ const StyledAbout = styled.section`
   .skills-section {
     margin-top: -8rem;
     
+    @media (min-width: 993px) {
+      margin-top: -14rem;
+    }
+    
+    @media (min-width: 769px) and (max-width: 992px) {
+      margin-top: -2rem;
+    }
+    
     @media (max-width: 768px) {
       margin-top: 2rem;
     }
@@ -338,20 +407,30 @@ const StyledAbout = styled.section`
     }
     
     .skills-title {
-      font-size: clamp(1.8rem, 4vw, 2.2rem);
+      font-size: clamp(1.5rem, 4vw, 2.2rem);
       color: var(--text-primary);
-      margin-bottom: 1.5rem;
+      margin-bottom: clamp(1.5rem, 4vw, 2rem);
       font-family: 'Orbitron', sans-serif;
       font-weight: 700;
       text-align: center;
       text-transform: uppercase;
-      letter-spacing: 3px;
+      letter-spacing: clamp(1px, 2vw, 3px);
       position: relative;
       text-shadow: 0 0 20px rgba(8, 247, 254, 0.3);
       
+      @media (min-width: 769px) and (max-width: 1000px) {
+        font-size: clamp(1.4rem, 3.5vw, 2rem);
+        margin-bottom: clamp(2rem, 5vw, 2.5rem);
+        letter-spacing: clamp(1px, 1.8vw, 2.5px);
+      }
+      
+      @media (max-width: 768px) {
+        letter-spacing: clamp(1px, 1.5vw, 2px);
+        margin-bottom: clamp(1rem, 3vw, 1.5rem);
+      }
+      
       @media (max-width: 480px) {
-        letter-spacing: 1.5px;
-        margin-bottom: 1.2rem;
+        letter-spacing: 1px;
       }
       
       &::before {
@@ -376,16 +455,20 @@ const StyledAbout = styled.section`
         bottom: -12px;
         left: 50%;
         transform: translateX(-50%);
-        width: 80px;
+        width: clamp(60px, 15vw, 80px);
         height: 3px;
         background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple), var(--neon-blue));
         border-radius: 3px;
         box-shadow: 0 0 15px rgba(8, 247, 254, 0.6);
         
-        @media (max-width: 480px) {
-          width: 60px;
+        @media (max-width: 768px) {
           height: 2px;
           bottom: -10px;
+        }
+        
+        @media (max-width: 480px) {
+          height: 2px;
+          bottom: -8px;
         }
       }
     }
@@ -393,18 +476,18 @@ const StyledAbout = styled.section`
   
   .skills-container {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 2rem;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: clamp(1rem, 3vw, 2rem);
     margin-top: 2rem;
     
     @media (max-width: 1200px) {
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1.5rem;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: clamp(1rem, 2.5vw, 1.5rem);
     }
     
     @media (max-width: 768px) {
-      grid-template-columns: repeat(2, 1fr);
-      gap: 1.5rem;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: clamp(1rem, 2vw, 1.5rem);
     }
     
     @media (max-width: 480px) {
@@ -413,23 +496,23 @@ const StyledAbout = styled.section`
     }
     
     @media (max-width: 360px) {
-      grid-template-columns: 1fr;
-      gap: 1rem;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.8rem;
     }
   }
   
   .skill-box {
     background: linear-gradient(135deg, rgba(12, 12, 15, 0.95), rgba(20, 20, 25, 0.8));
     border: 2px solid rgba(255, 255, 255, 0.1);
-    border-radius: 20px;
-    padding: 2rem 1.5rem;
+    border-radius: clamp(15px, 3vw, 20px);
+    padding: clamp(1.2rem, 3vw, 2rem) clamp(1rem, 2.5vw, 1.5rem);
     text-align: center;
     transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     cursor: pointer;
     position: relative;
     overflow: hidden;
     backdrop-filter: blur(25px);
-    height: 140px;
+    height: clamp(110px, 20vw, 140px);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -438,15 +521,18 @@ const StyledAbout = styled.section`
       0 8px 32px rgba(0, 0, 0, 0.4),
       inset 0 1px 0 rgba(255, 255, 255, 0.1);
     
+    @media (max-width: 768px) {
+      height: clamp(100px, 18vw, 120px);
+    }
+    
     @media (max-width: 480px) {
-      height: 120px;
-      padding: 1.5rem 1rem;
-      border-radius: 15px;
+      height: clamp(90px, 16vw, 110px);
+      padding: clamp(1rem, 2.5vw, 1.5rem) clamp(0.8rem, 2vw, 1rem);
     }
     
     @media (max-width: 360px) {
-      height: 110px;
-      padding: 1.2rem 0.8rem;
+      height: clamp(85px, 15vw, 100px);
+      padding: clamp(0.8rem, 2vw, 1.2rem) clamp(0.6rem, 1.5vw, 0.8rem);
     }
     
     /* Animated gradient border */
@@ -463,17 +549,13 @@ const StyledAbout = styled.section`
         ${props => props.color || '#08f7fe'}30,
         transparent
       );
-      border-radius: 20px;
+      border-radius: clamp(15px, 3vw, 20px);
       mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
       mask-composite: xor;
       -webkit-mask-composite: xor;
       animation: borderRotate 4s linear infinite;
       opacity: 0;
       transition: opacity 0.4s ease;
-      
-      @media (max-width: 480px) {
-        border-radius: 15px;
-      }
     }
     
     /* Glowing background effect */
@@ -496,16 +578,20 @@ const StyledAbout = styled.section`
     }
     
     &:hover {
-      transform: translateY(-12px) scale(1.03);
+      transform: translateY(-8px) scale(1.02);
       box-shadow: 
-        0 25px 50px rgba(0, 0, 0, 0.5),
-        0 0 40px ${props => props.color || '#08f7fe'}25,
+        0 20px 40px rgba(0, 0, 0, 0.5),
+        0 0 30px ${props => props.color || '#08f7fe'}25,
         inset 0 1px 0 rgba(255, 255, 255, 0.2);
       background: linear-gradient(135deg, rgba(15, 15, 20, 0.98), rgba(25, 25, 35, 0.9));
       border-color: ${props => props.color || '#08f7fe'}60;
       
+      @media (max-width: 768px) {
+        transform: translateY(-6px) scale(1.015);
+      }
+      
       @media (max-width: 480px) {
-        transform: translateY(-8px) scale(1.02);
+        transform: translateY(-4px) scale(1.01);
       }
       
       &::before {
@@ -513,22 +599,21 @@ const StyledAbout = styled.section`
       }
       
       &::after {
-        width: 140px;
-        height: 140px;
-        
-        @media (max-width: 480px) {
-          width: 120px;
-          height: 120px;
-        }
+        width: clamp(100px, 20vw, 140px);
+        height: clamp(100px, 20vw, 140px);
       }
       
       .skill-icon {
         opacity: 0.25;
-        transform: scale(0.75) translateY(-8px);
+        transform: scale(0.75) translateY(-6px);
         filter: blur(0.5px);
         
+        @media (max-width: 768px) {
+          transform: scale(0.8) translateY(-4px);
+        }
+        
         @media (max-width: 480px) {
-          transform: scale(0.8) translateY(-6px);
+          transform: scale(0.85) translateY(-3px);
         }
       }
       
@@ -551,37 +636,42 @@ const StyledAbout = styled.section`
       z-index: 2;
       
       img {
-        width: 52px;
-        height: 52px;
+        width: clamp(38px, 8vw, 52px);
+        height: clamp(38px, 8vw, 52px);
         object-fit: contain;
         filter: brightness(1.2) contrast(1.3) saturate(1.1);
         
+        @media (max-width: 768px) {
+          width: clamp(35px, 7vw, 45px);
+          height: clamp(35px, 7vw, 45px);
+        }
+        
         @media (max-width: 480px) {
-          width: 42px;
-          height: 42px;
+          width: clamp(32px, 6vw, 40px);
+          height: clamp(32px, 6vw, 40px);
         }
         
         @media (max-width: 360px) {
-          width: 38px;
-          height: 38px;
+          width: clamp(28px, 5vw, 35px);
+          height: clamp(28px, 5vw, 35px);
         }
       }
     }
     
     .skill-name {
       font-family: 'Poppins', sans-serif;
-      font-size: clamp(0.8rem, 2vw, 0.95rem);
+      font-size: clamp(0.7rem, 1.8vw, 0.95rem);
       color: var(--text-primary);
       margin: 0;
       font-weight: 600;
       position: absolute;
       opacity: 0;
-      transform: translateY(20px);
+      transform: translateY(clamp(15px, 3vw, 20px));
       transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
       text-shadow: 
         0 0 20px ${props => props.color || '#08f7fe'}60,
         0 2px 4px rgba(0, 0, 0, 0.3);
-      letter-spacing: 0.5px;
+      letter-spacing: clamp(0.2px, 0.5vw, 0.5px);
       z-index: 2;
       text-transform: uppercase;
       white-space: nowrap;
@@ -590,19 +680,23 @@ const StyledAbout = styled.section`
       text-overflow: ellipsis;
       text-align: center;
       
+      @media (max-width: 768px) {
+        transform: translateY(clamp(12px, 2.5vw, 15px));
+      }
+      
       @media (max-width: 480px) {
-        letter-spacing: 0.3px;
-        transform: translateY(15px);
+        transform: translateY(clamp(10px, 2vw, 12px));
+        letter-spacing: 0.2px;
       }
     }
     
     .skill-progress {
       position: absolute;
-      bottom: 12px;
+      bottom: clamp(8px, 2vw, 12px);
       left: 50%;
       transform: translateX(-50%) scaleX(0);
-      width: 70px;
-      height: 4px;
+      width: clamp(50px, 12vw, 70px);
+      height: clamp(3px, 0.8vw, 4px);
       background: linear-gradient(
         90deg,
         ${props => props.color || '#08f7fe'},
@@ -616,10 +710,13 @@ const StyledAbout = styled.section`
         0 0 15px ${props => props.color || '#08f7fe'}50,
         0 2px 4px rgba(0, 0, 0, 0.3);
       
+      @media (max-width: 768px) {
+        bottom: clamp(6px, 1.5vw, 10px);
+      }
+      
       @media (max-width: 480px) {
-        width: 60px;
-        height: 3px;
-        bottom: 10px;
+        bottom: clamp(5px, 1vw, 8px);
+        height: clamp(2px, 0.6vw, 3px);
       }
     }
   }
@@ -667,13 +764,17 @@ const StyledAbout = styled.section`
     }
   }
 
+  @media (max-width: 1024px) {
+    padding: clamp(3rem, 8vh, 80px) 0 clamp(2rem, 6vh, 50px);
+  }
+  
   @media (max-width: 768px) {
-    padding: 80px 0 50px;
+    padding: 5rem 0 3rem;
+    min-height: auto;
   }
   
   @media (max-width: 480px) {
-    padding: 60px 0 40px;
-    min-height: auto;
+    padding: 4rem 0 2.5rem;
   }
 `;
 

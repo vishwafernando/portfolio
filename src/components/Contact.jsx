@@ -1,7 +1,8 @@
-import { useEffect, useRef, useState, useCallback, memo } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import styled from 'styled-components';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import emailjs from '@emailjs/browser';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -418,6 +419,8 @@ const Contact = () => {
   const sectionRef = useRef(null);
   const [isAnimated, setIsAnimated] = useState(false);
   const timelineRef = useRef(null);
+  const formRef = useRef();
+  const [status, setStatus] = useState('');
 
   // Enhanced animation function with particle effects and advanced sequencing
   const animateContact = useCallback(() => {
@@ -732,7 +735,32 @@ const Contact = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Handle form submission here
+    // Set the time field before sending
+    if (formRef.current) {
+      const now = new Date();
+      const formatted = now.toLocaleString();
+      let timeInput = formRef.current.querySelector('input[name="time"]');
+      if (!timeInput) {
+        timeInput = document.createElement('input');
+        timeInput.type = 'hidden';
+        timeInput.name = 'time';
+        formRef.current.appendChild(timeInput);
+      }
+      timeInput.value = formatted;
+    }
+    setStatus('Sending...');
+    emailjs.sendForm(
+      process.env.REACT_APP_EMAILJS_SERVICE_ID,
+      process.env.REACT_APP_EMAILJS_TEMPLATE_ID,
+      formRef.current,
+      process.env.REACT_APP_EMAILJS_USER_ID
+    )
+    .then((result) => {
+      setStatus('Message sent successfully!');
+      formRef.current.reset();
+    }, (error) => {
+      setStatus('Failed to send message. Please try again.');
+    });
   };
 
   return (
@@ -757,20 +785,22 @@ const Contact = () => {
         </div>
 
         <div className="contact-form">
-          <form onSubmit={handleSubmit}>
+          <form ref={formRef} onSubmit={handleSubmit}>
             <div className="form-group">
-              <input type="text" id="name" placeholder=" " required />
+              <input type="text" id="name" name="from_name" placeholder=" " required />
               <label htmlFor="name">Your Name</label>
             </div>
             <div className="form-group">
-              <input type="email" id="email" placeholder=" " required />
+              <input type="email" id="email" name="from_email" placeholder=" " required />
               <label htmlFor="email">Your Email</label>
             </div>
             <div className="form-group">
-              <textarea id="message" placeholder=" " required></textarea>
+              <textarea id="message" name="message" placeholder=" " required></textarea>
               <label htmlFor="message">Your Message</label>
             </div>
+            <input type="hidden" name="time" />
             <button type="submit">Send Message</button>
+            <div style={{marginTop: '1rem', color: status.includes('success') ? 'var(--neon-blue)' : 'var(--neon-pink)'}}>{status}</div>
           </form>
         </div>
       </div>

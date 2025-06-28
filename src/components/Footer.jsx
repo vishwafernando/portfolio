@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import styled from 'styled-components';
 
 const StyledFooter = styled.footer`
@@ -431,4 +431,4 @@ const Footer = () => {
     );
 };
 
-export default memo(Footer);
+export default Footer;
