@@ -48,76 +48,104 @@ class SplineErrorBoundary extends React.Component {
 
 // Lazy load Spline to avoid Three.js conflicts
 let Spline = null;
+let splineLoadPromise = null; // Cache the loading promise
+
 const loadSpline = async () => {
-  if (!Spline) {
-    try {
-      const SplineModule = await import('@splinetool/react-spline');
-      // Handle both default and named exports
-      Spline = SplineModule.default || SplineModule.Spline || SplineModule;
-      
-      // Validate that we got a valid component
-      if (!Spline || (typeof Spline !== 'function' && !Spline.$$typeof)) {
-        throw new Error('Invalid Spline component loaded');
-      }
-    } catch (error) {
-      console.warn('Failed to load Spline:', error);
-      Spline = null;
-    }
+  // Return cached promise if already loading
+  if (splineLoadPromise) {
+    return splineLoadPromise;
   }
-  return Spline;
+  
+  if (!Spline) {
+    splineLoadPromise = (async () => {
+      try {
+        // Add a small delay to allow React Three Fiber to initialize first
+        await new Promise(resolve => setTimeout(resolve, 100));
+        
+        const SplineModule = await import('@splinetool/react-spline');
+        // Handle both default and named exports
+        Spline = SplineModule.default || SplineModule.Spline || SplineModule;
+        
+        // Validate that we got a valid component
+        if (!Spline || (typeof Spline !== 'function' && !Spline.$$typeof)) {
+          throw new Error('Invalid Spline component loaded');
+        }
+        
+        return Spline;
+      } catch (error) {
+        console.warn('Failed to load Spline:', error);
+        Spline = null;
+        splineLoadPromise = null; // Reset on error
+        throw error;
+      }
+    })();
+    
+    return splineLoadPromise;
+  }
+  return Promise.resolve(Spline);
 };
 
-// Suppress Three.js warnings in development
-if (process.env.NODE_ENV === 'development') {
-  const originalConsoleWarn = console.warn;
-  const originalConsoleError = console.error;
+// Suppress Three.js warnings in development and production
+const originalConsoleWarn = console.warn;
+const originalConsoleError = console.error;
+
+console.warn = (...args) => {
+  // Convert all arguments to strings for checking
+  const fullMessage = args.join(' ');
   
-  console.warn = (...args) => {
-    if (
-      typeof args[0] === 'string' && 
-      (args[0].includes('Multiple instances of Three.js') || 
-       args[0].includes('Missing property') ||
-       args[0].includes('GL_INVALID_FRAMEBUFFER_OPERATION') ||
-       args[0].includes('GL_INVALID_VALUE') ||
-       args[0].includes('GL_INVALID_OPERATION') ||
-       args[0].includes('GL_INVALID_ENUM') ||
-       args[0].includes('glTexStorage2D') ||
-       args[0].includes('glClear') ||
-       args[0].includes('glClearBufferfv') ||
-       args[0].includes('glDrawElements') ||
-       args[0].includes('glDrawArrays') ||
-       args[0].includes('glGetParameter') ||
-       args[0].includes('Framebuffer is incomplete') ||
-       args[0].includes('Attachment has zero size') ||
-       args[0].includes('Texture dimensions must all be greater than zero') ||
-       args[0].includes('Invalid WebGL context') ||
-       args[0].includes('Canvas created with zero dimensions') ||
-       args[0].includes('WebGL context lost') ||
-       args[0].includes('ForwardRef'))
-    ) {
-      return; // Suppress these specific warnings
-    }
-    originalConsoleWarn.apply(console, args);
-  };
+  if (
+    fullMessage.includes('Multiple instances of Three.js') || 
+    fullMessage.includes('Missing property') ||
+    fullMessage.includes('GL_INVALID_FRAMEBUFFER_OPERATION') ||
+    fullMessage.includes('GL_INVALID_VALUE') ||
+    fullMessage.includes('GL_INVALID_OPERATION') ||
+    fullMessage.includes('GL_INVALID_ENUM') ||
+    fullMessage.includes('glTexStorage2D') ||
+    fullMessage.includes('glClear') ||
+    fullMessage.includes('glClearBufferfv') ||
+    fullMessage.includes('glDrawElements') ||
+    fullMessage.includes('glDrawArrays') ||
+    fullMessage.includes('glGetParameter') ||
+    fullMessage.includes('Framebuffer is incomplete') ||
+    fullMessage.includes('Attachment has zero size') ||
+    fullMessage.includes('Texture dimensions must all be greater than zero') ||
+    fullMessage.includes('Invalid WebGL context') ||
+    fullMessage.includes('Canvas created with zero dimensions') ||
+    fullMessage.includes('WebGL context lost') ||
+    fullMessage.includes('ForwardRef') ||
+    fullMessage.includes('WARNING: Multiple instances') ||
+    // Check for object-based error patterns from Honeybadger/React DevTools
+    (args[0] && typeof args[0] === 'object' && args[0].message && 
+     (args[0].message.includes('Multiple instances') || args[0].message.includes('Missing property')))
+  ) {
+    return; // Suppress these specific warnings
+  }
+  originalConsoleWarn.apply(console, args);
+};
+
+console.error = (...args) => {
+  // Convert all arguments to strings for checking
+  const fullMessage = args.join(' ');
   
-  console.error = (...args) => {
-    if (
-      typeof args[0] === 'string' && 
-      (args[0].includes('ForwardRef') ||
-       args[0].includes('Missing property') ||
-       args[0].includes('GL_INVALID_FRAMEBUFFER_OPERATION') ||
-       args[0].includes('GL_INVALID_VALUE') ||
-       args[0].includes('GL_INVALID_OPERATION') ||
-       args[0].includes('GL_INVALID_ENUM') ||
-       args[0].includes('glGetParameter') ||
-       args[0].includes('Invalid WebGL context Error') ||
-       args[0].includes('WebGL'))
-    ) {
-      return; // Suppress these specific errors
-    }
-    originalConsoleError.apply(console, args);
-  };
-}
+  if (
+    fullMessage.includes('ForwardRef') ||
+    fullMessage.includes('Missing property') ||
+    fullMessage.includes('GL_INVALID_FRAMEBUFFER_OPERATION') ||
+    fullMessage.includes('GL_INVALID_VALUE') ||
+    fullMessage.includes('GL_INVALID_OPERATION') ||
+    fullMessage.includes('GL_INVALID_ENUM') ||
+    fullMessage.includes('glGetParameter') ||
+    fullMessage.includes('Invalid WebGL context Error') ||
+    fullMessage.includes('WebGL') ||
+    fullMessage.includes('Multiple instances of Three.js') ||
+    // Check for object-based error patterns
+    (args[0] && typeof args[0] === 'object' && args[0].message && 
+     (args[0].message.includes('Multiple instances') || args[0].message.includes('Missing property')))
+  ) {
+    return; // Suppress these specific errors
+  }
+  originalConsoleError.apply(console, args);
+};
 
 // Styles
 const StyledHero = styled.section`
@@ -1242,6 +1270,7 @@ const Hero = ({ startAnimations = false }) => {
         >
           <Canvas 
             camera={{ position: [0, 0, 15], fov: 75 }}
+            frameloop="demand" // Only render when needed to reduce conflicts
             onCreated={(state) => {
               try {
                 // Comprehensive validation before proceeding
