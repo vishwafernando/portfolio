@@ -10,8 +10,6 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@honeybadger-io/js": "^6.11.0",
-    "@honeybadger-io/react": "^6.1.27",
     "@react-three/drei": "^10.3.0",
     "@react-three/fiber": "^9.1.2",
     "@splinetool/react-spline": "^4.0.0",
