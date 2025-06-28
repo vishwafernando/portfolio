@@ -788,14 +788,14 @@ const Contact = () => {
           <form ref={formRef} onSubmit={handleSubmit}>
             <div className="form-group">
               <input type="text" id="name" name="from_name" placeholder=" " required />
-              <label htmlFor="name">Your Name</label>
+              <label htmlFor="from_name">Your Name</label>
             </div>
             <div className="form-group">
               <input type="email" id="email" name="from_email" placeholder=" " required />
-              <label htmlFor="email">Your Email</label>
+              <label htmlFor="from_email">Your Email</label>
             </div>
             <div className="form-group">
-              <textarea id="message" name="message" placeholder=" " required></textarea>
+              <textarea id="message" input type="text" name="message" placeholder=" " required></textarea>
               <label htmlFor="message">Your Message</label>
             </div>
             <input type="hidden" name="time" />
