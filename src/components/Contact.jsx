@@ -750,23 +750,31 @@ const Contact = () => {
     setStatus('Sending...');
     // Debug: log env variables
     console.log('EmailJS config:',
-      process.env.REACT_APP_EMAILJS_SERVICE_ID,
-      process.env.REACT_APP_EMAILJS_TEMPLATE_ID,
-      process.env.REACT_APP_EMAILJS_USER_ID
+      import.meta.VITE_EMAILJS_SERVICE_ID,
+      import.meta.VITE_EMAILJS_TEMPLATE_ID,
+      import.meta.VITE_EMAILJS_USER_ID
     );
     emailjs.sendForm(
-      process.env.REACT_APP_EMAILJS_SERVICE_ID,
-      process.env.REACT_APP_EMAILJS_TEMPLATE_ID,
+      import.meta.VITE_EMAILJS_SERVICE_ID,
+      import.meta.VITE_EMAILJS_TEMPLATE_ID,
       formRef.current,
-      process.env.REACT_APP_EMAILJS_USER_ID
+      import.meta.VITE_EMAILJS_USER_ID
     )
     .then((result) => {
       setStatus('Message sent successfully!');
       formRef.current.reset();
     }, (error) => {
       setStatus('Failed to send message. Please try again.');
-      // Debug: log error details
+      // Improved debug: log full error details
       console.error('EmailJS error:', error);
+      if (error && error.text) {
+        console.error('EmailJS error text:', error.text);
+      }
+      if (error && error.response) {
+        error.response.text().then((text) => {
+          console.error('EmailJS error response:', text);
+        });
+      }
     });
   };
 
