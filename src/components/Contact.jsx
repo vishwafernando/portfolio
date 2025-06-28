@@ -412,7 +412,6 @@ const StyledContact = styled.section`
     0%, 100% { transform: translateY(0px) scale(1); }
     33% { transform: translateY(-20px) scale(1.1); }
     66% { transform: translateY(10px) scale(0.9); }
-  }
 `;
 
 const Contact = () => {
@@ -749,6 +748,12 @@ const Contact = () => {
       timeInput.value = formatted;
     }
     setStatus('Sending...');
+    // Debug: log env variables
+    console.log('EmailJS config:',
+      process.env.REACT_APP_EMAILJS_SERVICE_ID,
+      process.env.REACT_APP_EMAILJS_TEMPLATE_ID,
+      process.env.REACT_APP_EMAILJS_USER_ID
+    );
     emailjs.sendForm(
       process.env.REACT_APP_EMAILJS_SERVICE_ID,
       process.env.REACT_APP_EMAILJS_TEMPLATE_ID,
@@ -760,6 +765,8 @@ const Contact = () => {
       formRef.current.reset();
     }, (error) => {
       setStatus('Failed to send message. Please try again.');
+      // Debug: log error details
+      console.error('EmailJS error:', error);
     });
   };
 
@@ -795,7 +802,7 @@ const Contact = () => {
               <label htmlFor="from_email">Your Email</label>
             </div>
             <div className="form-group">
-              <textarea id="message" input type="text" name="message" placeholder=" " required></textarea>
+              <textarea id="message" name="message" placeholder=" " required></textarea>
               <label htmlFor="message">Your Message</label>
             </div>
             <input type="hidden" name="time" />
@@ -808,4 +815,4 @@ const Contact = () => {
   );
 };
 
-export default Contact; 
+export default Contact;
