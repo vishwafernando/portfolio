@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo } from 'react';
 import styled from 'styled-components';
-
+ 
 const StyledFooter = styled.footer`
   background: var(--darker-bg);
   border-top: 1px solid rgba(8, 247, 254, 0.3);

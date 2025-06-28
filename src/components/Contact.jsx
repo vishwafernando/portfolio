@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import emailjs from '@emailjs/browser';
-
+ 
 gsap.registerPlugin(ScrollTrigger);
 
 const StyledContact = styled.section`

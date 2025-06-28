@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-
+// Importing GSAP for animations
 gsap.registerPlugin(ScrollTrigger);
 
 const StyledProjects = styled.section`

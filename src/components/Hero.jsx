@@ -4,7 +4,7 @@ import { gsap } from 'gsap';
 import { Canvas, useThree } from '@react-three/fiber';
 import { OrbitControls, Stars } from '@react-three/drei';
 import SplitType from 'split-type';
-
+ 
 // Error Boundary for Spline Component
 class SplineErrorBoundary extends React.Component {
   constructor(props) {

@@ -4,7 +4,7 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.jsx'
 import { Honeybadger, HoneybadgerErrorBoundary } from "@honeybadger-io/react"
-
+ 
 // Configure Honeybadger
 const config = {
    apiKey: import.meta.env.VITE_HONEYBADGER_API_KEY,

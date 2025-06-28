@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-
+ 
 const useResponsive = () => {
   const [screenSize, setScreenSize] = useState({
     width: typeof window !== 'undefined' ? window.innerWidth : 1200,

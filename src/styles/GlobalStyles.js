@@ -1,5 +1,5 @@
 import { createGlobalStyle } from 'styled-components';
-
+ 
 const GlobalStyles = createGlobalStyle`
   :root {
     --neon-pink: #ff2e63;

@@ -10,7 +10,7 @@ import Contact from './components/Contact';
 import Footer from './components/Footer';
 import Nav from './components/Nav';
 import Loading from './components/Loading';
-
+ 
 gsap.registerPlugin(ScrollTrigger);
 
 const StyledMain = styled.main`

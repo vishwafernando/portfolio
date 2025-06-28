@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 import styled from 'styled-components';
 import { gsap } from 'gsap';
-
+// Importing GSAP context for better performance
 const StyledNav = styled.nav`
   position: fixed;
   top: 0;

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
-
+// Importing keyframes for animations
 const fadeOut = keyframes`
   from {
     opacity: 1;

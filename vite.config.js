@@ -6,7 +6,7 @@ export default defineConfig({
   plugins: [react()],
   build: {
     rollupOptions: {
-      output: {
+      output: { 
         manualChunks: {
           // Separate React and React DOM into their own chunk
           'react-vendor': ['react', 'react-dom'],

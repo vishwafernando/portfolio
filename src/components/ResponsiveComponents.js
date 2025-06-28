@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-// Responsive Container Component
+// Responsive Container Component 
 export const ResponsiveContainer = styled.div`
   max-width: 1400px;
   margin: 0 auto;

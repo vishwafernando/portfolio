@@ -4,7 +4,7 @@ A modern, interactive portfolio website built with React, featuring stunning 3D 
 
 ![Portfolio Preview](public/assets/Project-2.png)
 
-## ✨ Features
+## ✨ Features 
 
 - **🎮 Interactive 3D Elements** - Powered by React Three Fiber and Three.js
 - **⚡ Smooth Animations** - GSAP animations with scroll triggers and hover effects
