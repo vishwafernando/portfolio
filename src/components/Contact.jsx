@@ -7,6 +7,7 @@ import emailjs from '@emailjs/browser';
 gsap.registerPlugin(ScrollTrigger);
 
 const StyledContact = styled.section`
+  /* ... your existing styles ... */
   min-height: 100vh;
   width: 100%;
   padding: clamp(2rem, 8vw, 8rem) clamp(1rem, 5vw, 5%);
@@ -414,6 +415,41 @@ const StyledContact = styled.section`
     66% { transform: translateY(10px) scale(0.9); }
 `;
 
+function getDeviceInfo() {
+  const userAgent = navigator.userAgent;
+  const platform = navigator.platform;
+  const language = navigator.language;
+  const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const timestamp = new Date().toISOString();
+
+  // Basic device detection
+  let device = "Desktop";
+  if (/Mobi|Android/i.test(userAgent)) device = "Mobile";
+  else if (/Tablet|iPad/i.test(userAgent)) device = "Tablet";
+
+  // Very basic OS detection
+  let os = "Unknown";
+  if (platform.startsWith("Win")) os = "Windows";
+  else if (platform.startsWith("Mac")) os = "macOS";
+  else if (platform.startsWith("Linux")) os = "Linux";
+  else if (/Android/i.test(userAgent)) os = "Android";
+  else if (/iPhone|iPad|iPod/i.test(userAgent)) os = "iOS";
+
+  // Region from language (approximate)
+  const region = language.split('-')[1] || "Unknown";
+
+  return {
+    userAgent,
+    platform,
+    language,
+    timezone,
+    timestamp,
+    device,
+    os,
+    region
+  };
+}
+
 const Contact = () => {
   const sectionRef = useRef(null);
   const [isAnimated, setIsAnimated] = useState(false);
@@ -734,8 +770,10 @@ const Contact = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Set the time field before sending
+    // Gather extra info
+    const deviceInfo = getDeviceInfo();
     if (formRef.current) {
+      // Set the time field before sending
       const now = new Date();
       const formatted = now.toLocaleString();
       let timeInput = formRef.current.querySelector('input[name="time"]');
@@ -746,6 +784,18 @@ const Contact = () => {
         formRef.current.appendChild(timeInput);
       }
       timeInput.value = formatted;
+
+      // Add device info as hidden fields
+      Object.entries(deviceInfo).forEach(([key, value]) => {
+        let input = formRef.current.querySelector(`input[name="${key}"]`);
+        if (!input) {
+          input = document.createElement('input');
+          input.type = 'hidden';
+          input.name = key;
+          formRef.current.appendChild(input);
+        }
+        input.value = value;
+      });
     }
     setStatus('Sending...');
     emailjs.sendForm(
@@ -787,18 +837,19 @@ const Contact = () => {
         <div className="contact-form">
           <form ref={formRef} onSubmit={handleSubmit}>
             <div className="form-group">
-              <input type="text" id="name" name="from_name" placeholder=" " required autocomplete="name" />
+              <input type="text" id="name" name="from_name" placeholder=" " required autoComplete="name" />
               <label htmlFor="name">Your Name</label>
             </div>
             <div className="form-group">
-              <input type="email" id="email" name="from_email" placeholder=" " required autocomplete="email" />
+              <input type="email" id="email" name="from_email" placeholder=" " required autoComplete="email" />
               <label htmlFor="email">Your Email</label>
             </div>
             <div className="form-group">
-              <textarea id="message" name="message" placeholder=" " required autocomplete="message"></textarea>
+              <textarea id="message" name="message" placeholder=" " required autoComplete="message"></textarea>
               <label htmlFor="message">Your Message</label>
             </div>
             <input type="hidden" name="time" />
+            {/* Device info fields will be dynamically inserted */}
             <button type="submit">Send Message</button>
             <div style={{marginTop: '1rem', color: status.includes('success') ? 'var(--neon-blue)' : 'var(--neon-pink)'}}>{status}</div>
           </form>
