@@ -55,7 +55,7 @@ const skills = [
         height="48"
       />
     )
-  },
+  }, 
   { 
     name: 'JavaScript', 
     color: '#f0db4f',

@@ -5,7 +5,7 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 // Importing GSAP for animations
 gsap.registerPlugin(ScrollTrigger); 
-
+ 
 const StyledProjects = styled.section`
   min-height: 100vh;
   padding: 8rem 5%;

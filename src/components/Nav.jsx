@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { gsap } from 'gsap';
 // Importing GSAP context for better performance
 const StyledNav = styled.nav`
-  position: fixed;
+  position: fixed; 
   top: 0; 
   left: 0;
   width: 100%;

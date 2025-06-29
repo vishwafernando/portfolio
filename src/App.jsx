@@ -53,8 +53,8 @@ const App = () => {
     setTimeout(() => {
       setStartAnimations(true);
     }, 100);
-  };
-
+  }; 
+  // Simulate loading complete after 2 seconds
   return (
     <>
       <GlobalStyles />

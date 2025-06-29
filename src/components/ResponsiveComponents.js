@@ -6,7 +6,7 @@ export const ResponsiveContainer = styled.div`
   margin: 0 auto; 
   padding: 0 clamp(1rem, 5vw, 2rem);
   width: 100%;
-`;
+`; 
  
 // Responsive Grid Component
 export const ResponsiveGrid = styled.div`

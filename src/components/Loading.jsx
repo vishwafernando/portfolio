@@ -3,7 +3,7 @@ import styled, { keyframes } from 'styled-components';
 // Importing keyframes for animations
 const fadeOut = keyframes`
   from {
-    opacity: 1;
+    opacity: 1; 
     visibility: visible; 
   }
   to {

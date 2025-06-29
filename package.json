@@ -2,12 +2,12 @@
   "name": "portfolio",
   "private": true,
   "version": "0.0.0",
-  "type": "module", 
-  "scripts": { 
+  "type": "module",
+  "scripts": {
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview" 
+    "preview": "vite preview"
   },
   "dependencies": {
     "@emailjs/browser": "^4.4.1",
@@ -17,6 +17,7 @@
     "@react-three/fiber": "^9.1.2",
     "@splinetool/react-spline": "^4.0.0",
     "@types/three": "^0.177.0",
+    "@vercel/speed-insights": "^1.2.0",
     "framer-motion": "^12.19.1",
     "gsap": "^3.13.0",
     "react": "^19.1.0",

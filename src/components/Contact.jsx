@@ -858,5 +858,5 @@ const Contact = () => {
     </StyledContact>
   );
 };
-
+ 
 export default Contact;

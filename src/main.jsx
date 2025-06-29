@@ -4,6 +4,7 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.jsx' 
 import { Honeybadger, HoneybadgerErrorBoundary } from "@honeybadger-io/react"
+import { SpeedInsights } from "@vercel/speed-insights/react"
  
 // Configure Honeybadger
 const config = { 
@@ -21,11 +22,15 @@ createRoot(document.getElementById('root')).render(
     {honeybadger ? (
       <HoneybadgerErrorBoundary honeybadger={honeybadger}>
         <App />
+        <SpeedInsights />
       </HoneybadgerErrorBoundary>
     ) : (
-      <App />
+      <>
+        <App />
+        <SpeedInsights />
+      </>
     )}
   </StrictMode>
 )
-
-  
+// This ensures that the app is wrapped in Honeybadger's error boundary
+// and Speed Insights is included for performance monitoring.

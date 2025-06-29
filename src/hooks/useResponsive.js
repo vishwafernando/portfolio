@@ -7,7 +7,7 @@ const useResponsive = () => {
   });
 
   const [isMobile, setIsMobile] = useState(false);
-  const [isTablet, setIsTablet] = useState(false);
+  const [isTablet, setIsTablet] = useState(false); 
   const [isDesktop, setIsDesktop] = useState(true);
 
   useEffect(() => {

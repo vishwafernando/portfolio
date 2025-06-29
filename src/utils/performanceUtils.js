@@ -5,7 +5,7 @@ export const useIntersectionObserver = (options = {}) => {
   const [isIntersecting, setIsIntersecting] = useState(false);
   const ref = useRef(null);
   // Reset intersection state when options change 
-  useEffect(() => {
+  useEffect(() => { 
     const element = ref.current;
     if (!element) return;
 
