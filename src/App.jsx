@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import GlobalStyles from './styles/GlobalStyles';
+import GlobalStyles from './styles/GlobalStyles'; 
 import Hero from './components/Hero';
 import About from './components/About';
 import Projects from './components/Projects';

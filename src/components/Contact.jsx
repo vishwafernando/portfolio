@@ -852,7 +852,7 @@ const Contact = () => {
             {/* Device info fields will be dynamically inserted */}
             <button type="submit">Send Message</button>
             <div style={{marginTop: '1rem', color: status.includes('success') ? 'var(--neon-blue)' : 'var(--neon-pink)'}}>{status}</div>
-          </form>
+          </form> 
         </div>
       </div>
     </StyledContact>

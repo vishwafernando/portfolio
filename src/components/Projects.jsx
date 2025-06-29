@@ -11,7 +11,7 @@ const StyledProjects = styled.section`
   padding: 8rem 5%;
   background: var(--dark-bg);
   position: relative;
-  overflow: visible;
+  overflow: visible; 
   perspective: 3000px;
   transform-style: preserve-3d;
 

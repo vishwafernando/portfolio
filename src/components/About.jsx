@@ -51,7 +51,7 @@ const skills = [
       <img 
         src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nodejs/nodejs-original.svg" 
         alt="Node.js" 
-        width="48" 
+        width="48"  
         height="48"
       />
     )

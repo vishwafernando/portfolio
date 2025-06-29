@@ -8,7 +8,7 @@ import SplitType from 'split-type';
 // Error Boundary for Spline Component 
 class SplineErrorBoundary extends React.Component {
   constructor(props) {
-    super(props);
+    super(props); 
     this.state = { hasError: false };
   }
 

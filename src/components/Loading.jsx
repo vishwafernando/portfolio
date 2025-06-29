@@ -7,7 +7,7 @@ const fadeOut = keyframes`
     visibility: visible; 
   }
   to {
-    opacity: 0;
+    opacity: 0; 
     visibility: hidden;
   }
 `;

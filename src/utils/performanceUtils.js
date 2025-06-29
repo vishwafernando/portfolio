@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 export const useIntersectionObserver = (options = {}) => {
   const [isIntersecting, setIsIntersecting] = useState(false);
   const ref = useRef(null);
-  // Reset intersection state when options change
+  // Reset intersection state when options change 
   useEffect(() => {
     const element = ref.current;
     if (!element) return;

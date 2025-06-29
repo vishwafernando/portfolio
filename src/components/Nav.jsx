@@ -8,7 +8,7 @@ const StyledNav = styled.nav`
   left: 0;
   width: 100%;
   padding: 1.2rem clamp(1rem, 5vw, 5%);
-  z-index: 1000;
+  z-index: 1000; 
   background: rgba(5, 5, 6, 0.85);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid rgba(8, 247, 254, 0.2);
