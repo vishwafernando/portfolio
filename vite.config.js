@@ -24,9 +24,6 @@ export default defineConfig({
           // Separate animation libraries
           'animation-vendor': ['gsap', 'framer-motion', 'split-type'],
           
-          // Separate styling libraries
-          'style-vendor': ['styled-components'],
-          
           // Separate utility libraries
           'utils-vendor': [
             '@honeybadger-io/react',
